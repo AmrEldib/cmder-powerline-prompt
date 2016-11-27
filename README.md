@@ -25,7 +25,7 @@ __Alternatively__, if you want to maintain link with the original repo, you can 
 then create a symbolic link from the `%CMDER_ROOT%/config` folder to the `.lua` file.  
 ```
 cd %CMDER_ROOT%/config  
-mklink -H cmder-powerline-prompt.lua <git-repo-folder-name>/cmder-powerline-prompt.lua 
+mklink /H cmder-powerline-prompt.lua <git-repo-folder-name>/cmder-powerline-prompt.lua 
 ```  
 
 # Helpful info for customizing Cmder 
