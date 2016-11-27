@@ -2,7 +2,11 @@
 
 This is a custom prompt for [Cmder](http://cmder.net/) (the alternative console emulator for Windows).  
 It looks like this:  
+![screenshot](screenshot.png)
 
+It has a blue background for the prompt.  
+For folders with git repos, you get yellow background for changes, and green for clean repos.  
+I'm using Consolas font.
 
 The look is inspired by [Powerline for Vim](https://github.com/powerline/powerline), and [Zsh's theme agnoster](https://github.com/agnoster/agnoster-zsh-theme).
 
