@@ -27,3 +27,26 @@ then create a symbolic link from the `%CMDER_ROOT%/config` folder to the `.lua` 
 cd %CMDER_ROOT%/config  
 mklink -H cmder-powerline-prompt.lua <git-repo-folder-name>/cmder-powerline-prompt.lua 
 ```  
+
+# Helpful info for customizing Cmder 
+
+## Links
+[Cmder Source Code and README](https://github.com/cmderdev/cmder)  
+[What is Clink](https://github.com/mridgers/clink/blob/master/docs/clink.md)  
+[Clink API](https://github.com/mridgers/clink/blob/master/docs/api.md)  
+[ANSI Color Sequence](http://ascii-table.com/ansi-escape-sequences.php)  
+
+## Cmder Configurations
+Cmder configurations is stored in `%CMDER_ROOT%\config\`  
+You can add files to be loaded during startup in either of these folders  
+        `%CMDER_ROOT%\config\profile.d`  
+        `%CMDER_ROOT%\config`  
+Add a `.ps1` file to be loaded for Powershell shells  
+Add a `.bat` or `.cmd` files to be loaded for Windows Command shells  
+Add a `.sh` file to be loaded for Bash shells  
+User-specific configurations should go into files named `user-profile` with extensions `ps1`, `cmd`/`bat`, or `sh`.  
+
+## Clink Prompt 
+The file `%CMDER_ROOT%\vendor\clink.lua` sets the command prompt. See the function `set_prompt_filter`.
+The prompt value is stored in [clink.prompt.value](https://github.com/mridgers/clink/blob/master/docs/api.md#clinkpromptvalue)  
+Drop .lua files into the `%CMDER_ROOT%\Config` folder to customize the prompt.
