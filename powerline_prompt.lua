@@ -138,6 +138,14 @@ local function get_git_dir(path)
         or (parent_path ~= path and get_git_dir(parent_path) or nil)
 end
 
+---
+ -- Get the status of working dir
+ -- @return {bool}
+---
+function get_git_status()
+    return os.execute("git diff --quiet --ignore-submodules HEAD")
+end
+
 -- adopted from clink.lua
 -- Modified to add colors and arrow symbols
 function colorful_git_prompt_filter()
@@ -167,7 +175,7 @@ function colorful_git_prompt_filter()
                 closingcolor = closingcolors.dirty
             end
 
-            clink.prompt.value = string.gsub(clink.prompt.value, "{git}", color..branch..closingcolor)
+            clink.prompt.value = string.gsub(clink.prompt.value, "{git}", color.."  "..branch..closingcolor)
             return false
         end
     end
