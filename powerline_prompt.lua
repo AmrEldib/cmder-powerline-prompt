@@ -143,7 +143,13 @@ end
  -- @return {bool}
 ---
 function get_git_status()
-    return os.execute("git diff --quiet --ignore-submodules HEAD")
+    local file = io.popen("git status --no-lock-index --porcelain 2>nul")
+    for line in file:lines() do
+        file:close()
+        return false
+    end
+    file:close()
+    return true
 end
 
 -- adopted from clink.lua
