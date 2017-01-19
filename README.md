@@ -13,7 +13,15 @@ The look is inspired by [Powerline for Vim](https://github.com/powerline/powerli
 # Requirements
 
 Download the [AnonymousPro font](https://github.com/powerline/fonts/tree/master/AnonymousPro)  
-You'll be able to use any font in Cmder, but this font contains the symbols included in the prompt.  
+You'll be able to use any font in Cmder, but this font contains the symbols included in the prompt. 
+
+## Font
+To use another font and still show symbols correctly:  
+- Go to Cmder Settings > Main  
+- Choose Main console font to be what you prefer  
+- Choose _Alternative font_ to be _Anonymice Powerline_  
+- Modify the value of _Unicode ranges_ to add: `E0A0; E0B0;`  
+- Save Settings  
 
 # Usage
 

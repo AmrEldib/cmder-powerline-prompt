@@ -8,6 +8,9 @@ function lambda_prompt_filter()
     clink.prompt.value = string.gsub(new_value, "{lamb}", "λ")
 end
 
+local arrowSymbol = ""
+local branchSymbol = ""
+
 --- copied from clink.lua
  -- Resolves closest directory location for specified directory.
  -- Navigates subsequently up one level and tries to find specified directory
@@ -158,13 +161,13 @@ function colorful_git_prompt_filter()
 
     -- Colors for git status
     local colors = {
-        clean = "\x1b[34;42m\x1b[37;42m ",
-        dirty = "\x1b[34;43m\x1b[30;43m ",
+        clean = "\x1b[34;42m"..arrowSymbol.."\x1b[37;42m ",
+        dirty = "\x1b[34;43m"..arrowSymbol.."\x1b[30;43m ",
     }
 
     local closingcolors = {
-        clean = " \x1b[32;40m",
-        dirty = "± \x1b[33;40m",
+        clean = " \x1b[32;40m"..arrowSymbol,
+        dirty = "± \x1b[33;40m"..arrowSymbol,
     }
 
     local git_dir = get_git_dir()
@@ -181,13 +184,14 @@ function colorful_git_prompt_filter()
                 closingcolor = closingcolors.dirty
             end
 
-            clink.prompt.value = string.gsub(clink.prompt.value, "{git}", color.."  "..branch..closingcolor)
+            --clink.prompt.value = string.gsub(clink.prompt.value, "{git}", color.."  "..branch..closingcolor)
+            clink.prompt.value = string.gsub(clink.prompt.value, "{git}", color.." "..branchSymbol.." "..branch..closingcolor)
             return false
         end
     end
 
     -- No git present or not in git file
-    clink.prompt.value = string.gsub(clink.prompt.value, "{git}", "\x1b[34;40m")
+    clink.prompt.value = string.gsub(clink.prompt.value, "{git}", "\x1b[34;40m"..arrowSymbol)
     return false
 end
 
