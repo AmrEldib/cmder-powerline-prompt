@@ -1,15 +1,26 @@
 -- Source: https://github.com/AmrEldib/cmder-powerline-prompt 
 
+local arrowSymbol = ""
+local arrowLeftSymbol = ""
+local branchSymbol = ""
+
 -- Resets the prompt 
 function lambda_prompt_filter()
-    cwd = clink.get_cwd()
-    prompt = "\x1b[37;44m{cwd} {git}{hg}\n\x1b[1;30;40m{lamb} \x1b[0m"
-    new_value = string.gsub(prompt, "{cwd}", cwd)
-    clink.prompt.value = string.gsub(new_value, "{lamb}", "λ")
-end
+    local cwd = clink.get_cwd()
+    local prompt = "\x1b[37;44m{cwd} {git}{hg} {env}\n\x1b[1;32;40m{lamb} \x1b[0m"
+    prompt = string.gsub(prompt, "{cwd}", cwd)
 
-local arrowSymbol = ""
-local branchSymbol = ""
+    local old_prompt = clink.prompt.value
+    local env = old_prompt:match('%[33;22;49m%((.+)%).+%[39;22;49m')
+
+    if env == nil then
+        prompt = string.gsub(prompt, "{env}", "")
+    else
+        prompt = string.gsub(prompt, "{env}", "\x1b[35;40m"..arrowLeftSymbol.."\x1b[37;45m "..env.." \x1b[35;40m"..arrowSymbol.."\x1b[0m")
+    end
+
+    clink.prompt.value = string.gsub(prompt, "{lamb}", "λ")
+end
 
 --- copied from clink.lua
  -- Resolves closest directory location for specified directory.
