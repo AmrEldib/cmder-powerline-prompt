@@ -1,6 +1,6 @@
 # Cmder-powerline-prompt
 
-This is a custom prompt for [Cmder](http://cmder.net/) (the alternative console emulator for Windows).  
+This is a custom prompt for [Cmder](http://cmder.net/) (the alternative console emulator for Windows). There's also a [PowerShell version](https://github.com/AmrEldib/cmder-powershell-powerline-prompt) of this prompt.  
 It looks like this:  
 ![screenshot](screenshot.png)
 
