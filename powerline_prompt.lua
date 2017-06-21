@@ -1,8 +1,26 @@
 -- Source: https://github.com/AmrEldib/cmder-powerline-prompt 
 
+--- promptValue is whether the displayed prompt is the full path or only the folder name
+ -- Use:
+ -- "full" for full path like C:\Windows\System32
+local promptValueFull = "full"
+ -- "folder" for folder name only like System32
+local promptValueFolder = "folder"
+ -- default is promptValueFull
+local promptValue = promptValueFull
+
+local function get_folder_name(path)
+	local reversePath = string.reverse(path)
+	local slashIndex = string.find(reversePath, "\\")
+	return string.sub(path, string.len(path) - slashIndex + 2)
+end
+
 -- Resets the prompt 
 function lambda_prompt_filter()
     cwd = clink.get_cwd()
+	if promptValue == promptValueFolder then
+		cwd =  get_folder_name(cwd)
+	end
     prompt = "\x1b[37;44m{cwd} {git}{hg}\n\x1b[1;30;40m{lamb} \x1b[0m"
     new_value = string.gsub(prompt, "{cwd}", cwd)
     clink.prompt.value = string.gsub(new_value, "{lamb}", "λ")

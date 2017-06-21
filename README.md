@@ -36,6 +36,16 @@ cd %CMDER_ROOT%/config
 mklink /H cmder-powerline-prompt.lua <git-repo-folder-name>/cmder-powerline-prompt.lua 
 ```  
 
+## Configuration
+
+You can modify the prompt to display either the full path or only the folder name.  
+To do this, modify the value of the `promptValue` variable in the `powerline_prompt.lua` file at [this line](https://github.com/AmrEldib/cmder-powerline-prompt/blob/master/powerline_prompt.lua#L10)  
+The value could be either:  
+- `promptValueFull` for full path like `C:\Windows\System32`  
+- `promptValueFolder` for folder name only like `System32`  
+
+`promptValueFull` is the default.  
+
 # Helpful info for customizing Cmder 
 
 ## Links
