@@ -1,4 +1,4 @@
--- Source: https://github.com/AmrEldib/cmder-powerline-prompt 
+-- Source: https://github.com/AmrEldib/cmder-powerline-prompt
 
 --- promptValue is whether the displayed prompt is the full path or only the folder name
  -- Use:
@@ -15,15 +15,33 @@ local function get_folder_name(path)
 	return string.sub(path, string.len(path) - slashIndex + 2)
 end
 
--- Resets the prompt 
+-- Resets the prompt
 function lambda_prompt_filter()
+    local old_prompt = clink.prompt.value
     cwd = clink.get_cwd()
 	if promptValue == promptValueFolder then
 		cwd =  get_folder_name(cwd)
 	end
+
+    -- environment systems like pythons virtualenv change the PROMPT and usually
+    -- set some variable. But the variables are differently named and we would never
+    -- get them all, so try to parse the env name out of the PROMPT.
+    -- envs are usually put in round or square parentheses and before the old prompt
+    local env = old_prompt:match('.*%([.*]%)%sλ')
+    -- also check for square brackets
+    if env == nil then env = old_prompt:match('.*%((.*)%)%sλ') end
+
+
     prompt = "\x1b[37;44m{cwd} {git}{hg}\n\x1b[1;30;40m{lamb} \x1b[0m"
     new_value = string.gsub(prompt, "{cwd}", cwd)
-    clink.prompt.value = string.gsub(new_value, "{lamb}", "λ")
+
+    if env == nil then
+        lambda = "λ"
+    else
+        lambda = "("..env..") λ"
+    end
+
+    clink.prompt.value = string.gsub(new_value, "{lamb}", lambda)
 end
 
 local arrowSymbol = ""
