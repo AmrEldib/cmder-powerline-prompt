@@ -8,6 +8,12 @@ local promptValueFull = "full"
 local promptValueFolder = "folder"
  -- default is promptValueFull
 local promptValue = promptValueFull
+--- prompt final char
+local promptEndChar = "λ"
+-- define some prompt FG colors
+-- See https://en.wikipedia.org/wiki/ANSI_escape_code#Colors for color codes
+local lambdaColor = 32
+local envPromptColor = 90
 
 local function get_folder_name(path)
 	local reversePath = string.reverse(path)
@@ -23,27 +29,16 @@ function lambda_prompt_filter()
 		cwd =  get_folder_name(cwd)
 	end
 
-    -- environment systems like pythons virtualenv change the PROMPT and usually
-    -- set some variable. But the variables are differently named and we would never
-    -- get them all, so try to parse the env name out of the PROMPT.
-    -- envs are usually put in round or square parentheses and before the old prompt
-    local env = old_prompt:match('.*%([.*]%)%sλ')
-    -- also check for square brackets
-    if env == nil then env = old_prompt:match('.*%((.*)%)%sλ') end
+    prompt_header = "\x1b[37;44m{cwd} {git}{hg}"
+    prompt_lhs = "\x1b[1;{clenv};40m{env}\x1b[1;{cllamb};40m{lamb} \x1b[0m"
+    prompt_tpl = prompt_header .. "\n" .. prompt_lhs
+    
+    prompt = string.gsub(prompt_tpl, "{cwd}", cwd)
+    prompt = string.gsub(prompt, "{lamb}", promptEndChar)
+    prompt = string.gsub(prompt, "{clenv}", envPromptColor)
+    prompt = string.gsub(prompt, "{cllamb}", lambdaColor)
 
-    if env == nil then
-		env = ""
-    else
-        env = "("..env..") "
-    end
-
-	lambda = "λ"
-	
-	prompt = "\x1b[37;44m{cwd} {git}{hg}\n\x1b[1;90;40m{env}\x1b[1;32;40m{lamb} \x1b[0m"
-    new_value = string.gsub(prompt, "{cwd}", cwd)
-    new_value = string.gsub(new_value, "{env}", env)
-
-    clink.prompt.value = string.gsub(new_value, "{lamb}", lambda)
+    clink.prompt.value = prompt
 end
 
 local arrowSymbol = ""
@@ -233,7 +228,22 @@ function colorful_git_prompt_filter()
     return false
 end
 
+-- Add PROMPT variable contents to the prompt (strip DOS symbols)
+-- so virtual environments will be shown
+function env_prompt_filter()
+    original_prompt = clink.get_env("PROMPT")
+    original_prompt_env = ""
+    if original_prompt ~= nil then
+        c = string.find(original_prompt, "[$]")
+        if c ~= nil then
+            original_prompt_env = string.sub(original_prompt, 1, c - 1)
+        end
+    end
+    clink.prompt.value = string.gsub(clink.prompt.value, "{env}", original_prompt_env)
+end
+
 -- override the built-in filters
 clink.prompt.register_filter(lambda_prompt_filter, 55)
+clink.prompt.register_filter(env_prompt_filter, 55)
 clink.prompt.register_filter(colorful_hg_prompt_filter, 60)
 clink.prompt.register_filter(colorful_git_prompt_filter, 60)
