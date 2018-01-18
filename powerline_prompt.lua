@@ -245,6 +245,6 @@ end
 
 -- override the built-in filters
 clink.prompt.register_filter(lambda_prompt_filter, 55)
-clink.prompt.register_filter(env_prompt_filter, 60)
+clink.prompt.register_filter(env_prompt_filter, 56)
 clink.prompt.register_filter(colorful_hg_prompt_filter, 60)
 clink.prompt.register_filter(colorful_git_prompt_filter, 60)
