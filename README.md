@@ -1,14 +1,19 @@
 # Cmder-powerline-prompt
 
-This is a custom prompt for [Cmder](http://cmder.net/) (the alternative console emulator for Windows). There's also a [PowerShell version](https://github.com/AmrEldib/cmder-powershell-powerline-prompt) of this prompt.  
-It looks like this:  
+This is a custom prompt for [Cmder](http://cmder.net/) (the alternative console emulator for Windows). There's also a 
+[PowerShell version](https://github.com/AmrEldib/cmder-powershell-powerline-prompt) of this prompt. It looks like this:  
+
 ![screenshot](screenshot.png)
 
 It has a blue background for the prompt.  
 For folders with git repos, you get yellow background for changes, and green for clean repos.  
-I'm using Consolas font.
 
 The look is inspired by [Powerline for Vim](https://github.com/powerline/powerline), and [Zsh's theme agnoster](https://github.com/agnoster/agnoster-zsh-theme).
+
+**Changes of this Fork:**
+
+- Support for virtual environments
+- Minor changes on color configs
 
 # Requirements
 
@@ -18,7 +23,7 @@ You'll be able to use any font in Cmder, but this font contains the symbols incl
 ## Font
 To use another font and still show symbols correctly:  
 - Go to Cmder Settings > Main  
-- Choose Main console font to be what you prefer  
+- Choose Main console font to be what you prefer (Recommended: *Consolas* - 18pt - **Bold**)
 - Choose _Alternative font_ to be _Anonymice Powerline_  
 - Modify the value of _Unicode ranges_ to add: `E0A0; E0B0;`  
 - Save Settings  
@@ -29,7 +34,7 @@ Download the `.lua` file, and place it in `%CMDER_ROOT%/config` folder.
 Restart Cmder to load the prompt.
 
 __Alternatively__, if you want to maintain link with the original repo, you can clone this repo into any folder  
-`git clone https://github.com/AmrEldib/cmder-powerline-prompt.git git-repo-folder-name`  
+`git clone https://github.com/igortg/cmder-powerline-prompt.git git-repo-folder-name`  
 then create a symbolic link from the `%CMDER_ROOT%/config` folder to the `.lua` file.  
 ```
 cd %CMDER_ROOT%/config  
