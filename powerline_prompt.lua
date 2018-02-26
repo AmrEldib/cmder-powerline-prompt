@@ -133,7 +133,7 @@ local function get_git_dir(path)
 
     -- Checks if provided directory contains git directory
     local function has_git_dir(dir)
-        return #clink.find_dirs(dir..'/.git') > 0 and dir..'/.git'
+        return clink.is_dir(dir..'/.git') and dir..'/.git'
     end
 
     local function has_git_file(dir)
@@ -164,7 +164,7 @@ end
  -- @return {bool}
 ---
 function get_git_status()
-    local file = io.popen("git status --no-lock-index --porcelain 2>nul")
+    local file = io.popen("git --no-optional-lock status --porcelain 2>nul")
     for line in file:lines() do
         file:close()
         return false
