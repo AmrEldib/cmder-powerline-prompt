@@ -76,11 +76,11 @@ You can also check out the [pull requests page](/pulls) for contributions that d
 
 People are very kind and contribute back fixes and improvements.  
 This section is to acknowledage their contributions and thank them. If you find their contributions helpful to you, please take the time to thank them directly.  
-- [omniphx](https://github.com/omniphx) [#2](pull/2)  
-- [umar-ahmed](https://github.com/umar-ahmed) [#6](pull/6)  
-- [tvercruysse](https://github.com/tvercruysse) [#10](pull/10)  
-- [igortg](https://github.com/igortg) [#24](pull/24)  
-- [0NG](https://github.com/0NG) [#27](pull/27)  
-- [mattdkerr](https://github.com/mattdkerr) [#29](pull/29)  
+- [omniphx](https://github.com/omniphx) [#2](https://github.com/AmrEldib/cmder-powerline-prompt/pull/2)  
+- [umar-ahmed](https://github.com/umar-ahmed) [#6](https://github.com/AmrEldib/cmder-powerline-prompt/pull/6)  
+- [tvercruysse](https://github.com/tvercruysse) [#10](https://github.com/AmrEldib/cmder-powerline-prompt/pull/10)  
+- [igortg](https://github.com/igortg) [#24](https://github.com/AmrEldib/cmder-powerline-prompt/pull/24)  
+- [0NG](https://github.com/0NG) [#27](https://github.com/AmrEldib/cmder-powerline-prompt/pull/27)  
+- [mattdkerr](https://github.com/mattdkerr) [#29](https://github.com/AmrEldib/cmder-powerline-prompt/pull/29)  
 
 I'd like to thank all who share their code with everyone for their time and effort.  
