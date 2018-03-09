@@ -15,6 +15,28 @@ local function get_folder_name(path)
 	return string.sub(path, string.len(path) - slashIndex + 2)
 end
 
+---
+-- Find out current branch
+-- @return {nil|git branch name}
+---
+local function get_git_branch(git_dir)
+    git_dir = git_dir or get_git_dir()
+
+    -- If git directory not found then we're probably outside of repo
+    -- or something went wrong. The same is when head_file is nil
+    local head_file = git_dir and io.open(git_dir..'/HEAD')
+    if not head_file then return end
+
+    local HEAD = head_file:read()
+    head_file:close()
+
+    -- if HEAD matches branch expression, then we're on named branch
+    -- otherwise it is a detached commit
+    local branch_name = HEAD:match('ref: refs/heads/(.+)')
+
+    return branch_name or 'HEAD detached at '..HEAD:sub(1, 7)
+end
+
 -- Resets the prompt 
 function lambda_prompt_filter()
     cwd = clink.get_cwd()
