@@ -68,3 +68,18 @@ User-specific configurations should go into files named `user-profile` with exte
 The file `%CMDER_ROOT%\vendor\clink.lua` sets the command prompt. See the function `set_prompt_filter`.
 The prompt value is stored in [clink.prompt.value](https://github.com/mridgers/clink/blob/master/docs/api.md#clinkpromptvalue)  
 Drop .lua files into the `%CMDER_ROOT%\Config` folder to customize the prompt.
+
+# Status & Contribution
+I published this code because it's not nice to keep it to myself. I fix problems that I encounter, and try to fix problems that others encounter if I have time.   
+This code is provided with the timeless __Works on my Machine__ gurentee.  
+You can also check out the [pull requests page](/pulls) for contributions that didn't make back into this repo. These are fixes to problems I didn't encounter, or features not useful to me, but maybe useful to you.  
+
+People are very kind and contribute back fixes and improvements.  
+This section is to acknowledage their contributions and thank them. If you find their contributions helpful to you, please take the time to thank them directly.  
+- [omniphx](https://github.com/omniphx) [#2](/pull/2)  
+- [umar-ahmed](https://github.com/umar-ahmed) [#6](/pull/6)  
+- [tvercruysse](https://github.com/tvercruysse) [#10](/pull/10)  
+- [igortg](https://github.com/igortg) [#24](/pull/24)  
+- [mattdkerr](https://github.com/mattdkerr) [#29](/pull/29)  
+
+I'd like to thank all who share their code with everyone for their time and effort.  
