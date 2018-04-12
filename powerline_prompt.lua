@@ -6,13 +6,66 @@
 local promptValueFull = "full"
  -- "folder" for folder name only like System32
 local promptValueFolder = "folder"
+
+local promptValueNone = "none"
+
  -- default is promptValueFull
 local promptValue = promptValueFull
+
 
 local function get_folder_name(path)
 	local reversePath = string.reverse(path)
 	local slashIndex = string.find(reversePath, "\\")
 	return string.sub(path, string.len(path) - slashIndex + 2)
+end
+
+local npmIcon = ""
+local nodeIcon = ""
+local featureIcon = ""
+local projectIcon = ""
+
+
+
+-- copied from clink.lua
+-- clink.lua is saved under %CMDER_ROOT%\vendor
+local function get_git_dir(path)   
+
+	-- return parent path for specified entry (either file or directory)
+	local function pathname(path)
+		local prefix = ""
+		local i = path:find("[\\/:][^\\/:]*$")
+		if i then
+			prefix = path:sub(1, i-1)
+		end
+		return prefix
+	end
+
+    -- Checks if provided directory contains git directory
+    local function has_git_dir(dir)
+        return clink.is_dir(dir..'/.git') and dir..'/.git'
+    end
+
+    local function has_git_file(dir)
+        local gitfile = io.open(dir..'/.git')
+        if not gitfile then return false end
+
+        local git_dir = gitfile:read():match('gitdir: (.*)')
+        gitfile:close()
+
+        return git_dir and dir..'/'..git_dir
+    end
+
+    -- Set default path to current directory
+    if not path or path == '.' then path = clink.get_cwd() end
+
+    -- Calculate parent path now otherwise we won't be
+    -- able to do that inside of logical operator
+    local parent_path = pathname(path)
+
+    return has_git_dir(path)
+        or has_git_file(path)
+        -- Otherwise go up one level and make a recursive call
+        or (parent_path ~= path and get_git_dir(parent_path) or nil)
 end
 
 ---
@@ -34,16 +87,29 @@ local function get_git_branch(git_dir)
     -- otherwise it is a detached commit
     local branch_name = HEAD:match('ref: refs/heads/(.+)')
 
+
     return branch_name or 'HEAD detached at '..HEAD:sub(1, 7)
 end
 
 -- Resets the prompt 
 function lambda_prompt_filter()
+	local git_dir = get_git_dir()
+	
+    if git_dir then
+		promptValue=promptValueNone
+	else
+		promptValue=promptValueFull
+	end
+	
     cwd = clink.get_cwd()
 	if promptValue == promptValueFolder then
 		cwd =  get_folder_name(cwd)
 	end
-    prompt = "\x1b[37;44m{cwd} {git}{hg}\n\x1b[1;30;40m{lamb} \x1b[0m"
+	
+	if promptValue == promptValueNone then
+		cwd = " "..projectIcon
+	end
+    prompt = "\x1b[37;44m{cwd} {npm}{git}{hg}\n\x1b[1;30;40m{lamb} \x1b[0m"
     new_value = string.gsub(prompt, "{cwd}", cwd)
     clink.prompt.value = string.gsub(new_value, "{lamb}", "λ")
 end
@@ -139,48 +205,6 @@ function colorful_hg_prompt_filter()
     return false
 end
 
--- copied from clink.lua
--- clink.lua is saved under %CMDER_ROOT%\vendor
-local function get_git_dir(path)
-
-    -- return parent path for specified entry (either file or directory)
-    local function pathname(path)
-        local prefix = ""
-        local i = path:find("[\\/:][^\\/:]*$")
-        if i then
-            prefix = path:sub(1, i-1)
-        end
-        return prefix
-    end
-
-    -- Checks if provided directory contains git directory
-    local function has_git_dir(dir)
-        return clink.is_dir(dir..'/.git') and dir..'/.git'
-    end
-
-    local function has_git_file(dir)
-        local gitfile = io.open(dir..'/.git')
-        if not gitfile then return false end
-
-        local git_dir = gitfile:read():match('gitdir: (.*)')
-        gitfile:close()
-
-        return git_dir and dir..'/'..git_dir
-    end
-
-    -- Set default path to current directory
-    if not path or path == '.' then path = clink.get_cwd() end
-
-    -- Calculate parent path now otherwise we won't be
-    -- able to do that inside of logical operator
-    local parent_path = pathname(path)
-
-    return has_git_dir(path)
-        or has_git_file(path)
-        -- Otherwise go up one level and make a recursive call
-        or (parent_path ~= path and get_git_dir(parent_path) or nil)
-end
-
 ---
  -- Get the status of working dir
  -- @return {bool}
@@ -198,7 +222,6 @@ end
 -- adopted from clink.lua
 -- Modified to add colors and arrow symbols
 function colorful_git_prompt_filter()
-
     -- Colors for git status
     local colors = {
         clean = "\x1b[34;42m"..arrowSymbol.."\x1b[37;42m ",
@@ -214,6 +237,7 @@ function colorful_git_prompt_filter()
     if git_dir then
         -- if we're inside of git repo then try to detect current branch
         local branch = get_git_branch(git_dir)
+		
         if branch then
             -- Has branch => therefore it is a git folder, now figure out status
             if get_git_status() then
@@ -225,7 +249,7 @@ function colorful_git_prompt_filter()
             end
 
             --clink.prompt.value = string.gsub(clink.prompt.value, "{git}", color.."  "..branch..closingcolor)
-            clink.prompt.value = string.gsub(clink.prompt.value, "{git}", color.." "..branchSymbol.." "..branch..closingcolor)
+            clink.prompt.value = string.gsub(clink.prompt.value, "{git}", color..""..featureIcon.." "..branch..closingcolor)
             return false
         end
     end
@@ -235,7 +259,102 @@ function colorful_git_prompt_filter()
     return false
 end
 
+local pathToProject = nil
+
+local function find_json(path)
+	
+	-- return parent path for specified entry (either file or directory)
+	local function pathname(path)
+		local prefix = ""
+		local postfix = ""
+		local i = path:find("[\\/:][^\\/:]*$")
+		if i then
+			prefix = path:sub(1, i-1)
+			postfix = path:sub(i)
+			if pathToProject == nil then
+				pathToProject = postfix
+			else
+				pathToProject = postfix..''..pathToProject
+			end
+			
+		end
+		return prefix
+	end
+	
+	if not path or path == '.' then path = clink.get_cwd() end
+	
+	local parent_path = pathname(path)	
+	return io.open(path..'\\package.json') or (parent_path ~= path and find_json(parent_path) or nil)
+end
+
+-- adopted from clink.lua
+-- Modified to add colors and arrow symbols
+function colorful_npm_prompt_filter()
+	-- local package = io.open('package.json')
+	pathToProject = nil
+	local package = find_json(nil, test)
+	
+	if pathToProject then
+		local j = pathToProject:find("\\",2)
+		if j then
+			pathToProject = pathToProject:sub(j+1);
+			pathToProject = "./"..string.gsub(pathToProject, "\\", "/")
+		else
+			pathToProject = "."
+		end
+		pathToProject = pathToProject.." "
+	end
+	
+    -- Colors for npm status
+    local colors = {
+        clean = "\x1b[34;42m"..arrowSymbol.."\x1b[37;42m "
+    }
+
+    local closingcolors = {
+        clean = "\x1b[34;40m"..arrowSymbol.."  ",
+    }
+	
+	color = colors.clean
+	closingcolor = closingcolors.clean
+
+ 
+    if package ~= nil then
+		local package_info = package:read('*a')
+		package:close()
+		
+		local package_name = string.match(package_info, '"name"%s*:%s*"(%g-)"')
+		if package_name == nil then
+			package_version = ''
+		end     
+		
+		local package_version = string.match(package_info, '"version"%s*:%s*"(.-)"')
+		if package_version == nil then
+			package_version = ''
+		end  
+		
+		-- if package_name == '' then
+		-- 	clink.prompt.value = string.gsub(clink.prompt.value, "{npm}", "\x1b[34;40m"..arrowSymbol)
+		-- 	return false
+		-- end
+		
+		-- if package_version == '' then 
+		-- 	clink.prompt.value = string.gsub(clink.prompt.value, "{npm}", color.." "..package_name.." "..closingcolor)
+		--     return false
+		-- end
+		
+		clink.prompt.value = string.gsub(clink.prompt.value, "{npm}", pathToProject.."\x1b[34;46m"..arrowSymbol.."\x1b[39;46m "..npmIcon.." 
+"..package_name.."@"..package_version.." \x1b[36;44m"..arrowSymbol)
+		return false
+		
+    end
+	
+	clink.prompt.value = string.gsub(clink.prompt.value, "{npm}", "")
+    return false
+end
+
+
 -- override the built-in filters
 clink.prompt.register_filter(lambda_prompt_filter, 55)
 clink.prompt.register_filter(colorful_hg_prompt_filter, 60)
-clink.prompt.register_filter(colorful_git_prompt_filter, 60)
+clink.prompt.register_filter(colorful_git_prompt_filter, 65)
+clink.prompt.register_filter(colorful_npm_prompt_filter, 60)
