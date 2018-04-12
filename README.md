@@ -1,13 +1,3 @@
-# New stuff witth this fork
-I m not proficient LA dev, just hastly plugged some holes that i needed to plug. Probably there are ways to do it more efficient. At this point, I do 
-not care.
- - Handling of NodeJs package.json
- - when in project directory, hides all the path to folder (it becomes like a home dir)
- - used some of the icomoon stuff, fill free to customize
- - stripped the `-> origin` from the git status check - by reordering
-
-----
-
 # Cmder-powerline-prompt
 
 This is a custom prompt for [Cmder](http://cmder.net/) (the alternative console emulator for Windows). There's also a [PowerShell version](https://github.com/AmrEldib/cmder-powershell-powerline-prompt) of this prompt.  
