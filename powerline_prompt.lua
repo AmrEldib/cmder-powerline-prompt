@@ -12,6 +12,8 @@ local promptValueNone = "none"
  -- default is promptValueFull
 local promptValue = promptValueFull
 
+local pathToProject = nil
+
 
 local function get_folder_name(path)
 	local reversePath = string.reverse(path)
@@ -29,10 +31,10 @@ local projectIcon = ""
 -- copied from clink.lua
 -- clink.lua is saved under %CMDER_ROOT%\vendor
 local function get_git_dir(path)   
-
 	-- return parent path for specified entry (either file or directory)
 	local function pathname(path)
 		local prefix = ""
+		local postfix = ""
 		local i = path:find("[\\/:][^\\/:]*$")
 		if i then
 			prefix = path:sub(1, i-1)
@@ -107,7 +109,19 @@ function lambda_prompt_filter()
 	end
 	
 	if promptValue == promptValueNone then
-		cwd = " "..projectIcon
+	    if git_dir then
+			local path = nill
+			
+			if not path or path == '.' then 
+				path = clink.get_cwd() 
+			end
+			
+			pathToProject = "."..path:sub(string.len(git_dir)-4):gsub("\\","/")
+			cwd = " "..projectIcon.." "..pathToProject
+		else
+			cwd = " "..projectIcon.." "
+		end
+		
 	end
     prompt = "\x1b[37;44m{cwd} {npm}{git}{hg}\n\x1b[1;30;40m{lamb} \x1b[0m"
     new_value = string.gsub(prompt, "{cwd}", cwd)
@@ -233,8 +247,16 @@ function colorful_git_prompt_filter()
         dirty = "± \x1b[33;40m"..arrowSymbol,
     }
 
+	
     local git_dir = get_git_dir()
-    if git_dir then
+	
+	local path = nill
+	if not path or path == '.' then 
+		path = clink.get_cwd() 
+	end
+	
+	
+    if git_dir then		
         -- if we're inside of git repo then try to detect current branch
         local branch = get_git_branch(git_dir)
 		
@@ -259,8 +281,6 @@ function colorful_git_prompt_filter()
     return false
 end
 
-local pathToProject = nil
-
 local function find_json(path)
 	
 	-- return parent path for specified entry (either file or directory)
@@ -270,12 +290,6 @@ local function find_json(path)
 		local i = path:find("[\\/:][^\\/:]*$")
 		if i then
 			prefix = path:sub(1, i-1)
-			postfix = path:sub(i)
-			if pathToProject == nil then
-				pathToProject = postfix
-			else
-				pathToProject = postfix..''..pathToProject
-			end
 			
 		end
 		return prefix
@@ -290,21 +304,8 @@ end
 -- adopted from clink.lua
 -- Modified to add colors and arrow symbols
 function colorful_npm_prompt_filter()
-	-- local package = io.open('package.json')
-	pathToProject = nil
 	local package = find_json(nil, test)
-	
-	if pathToProject then
-		local j = pathToProject:find("\\",2)
-		if j then
-			pathToProject = pathToProject:sub(j+1);
-			pathToProject = "./"..string.gsub(pathToProject, "\\", "/")
-		else
-			pathToProject = "."
-		end
-		pathToProject = pathToProject.." "
-	end
-	
+
     -- Colors for npm status
     local colors = {
         clean = "\x1b[34;42m"..arrowSymbol.."\x1b[37;42m "
@@ -342,7 +343,7 @@ function colorful_npm_prompt_filter()
 		--     return false
 		-- end
 		
-		clink.prompt.value = string.gsub(clink.prompt.value, "{npm}", pathToProject.."\x1b[34;46m"..arrowSymbol.."\x1b[39;46m "..npmIcon.." 
+		clink.prompt.value = string.gsub(clink.prompt.value, "{npm}", "\x1b[34;46m"..arrowSymbol.."\x1b[39;46m "..npmIcon.." 
 "..package_name.."@"..package_version.." \x1b[36;44m"..arrowSymbol)
 		return false
 		
@@ -356,5 +357,5 @@ end
 -- override the built-in filters
 clink.prompt.register_filter(lambda_prompt_filter, 55)
 clink.prompt.register_filter(colorful_hg_prompt_filter, 60)
-clink.prompt.register_filter(colorful_git_prompt_filter, 65)
-clink.prompt.register_filter(colorful_npm_prompt_filter, 60)
+clink.prompt.register_filter(colorful_git_prompt_filter, 61)
+clink.prompt.register_filter(colorful_npm_prompt_filter, 62)
