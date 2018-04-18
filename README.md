@@ -50,8 +50,8 @@ The value could be either:
 
 ## Links
 [Cmder Source Code and README](https://github.com/cmderdev/cmder)  
-[What is Clink](https://github.com/mridgers/clink/blob/master/docs/clink.md)  
-[Clink API](https://github.com/mridgers/clink/blob/master/docs/api.md)  
+[What is Clink](https://github.com/AmrEldib/cmder-powerline-prompt/blob/master/docs/clink.md)  
+[Clink Lua API](https://github.com/AmrEldib/cmder-powerline-prompt/blob/master/docs/clink_api.md)  
 [ANSI Color Sequence](http://ascii-table.com/ansi-escape-sequences.php)  
 
 ## Cmder Configurations
