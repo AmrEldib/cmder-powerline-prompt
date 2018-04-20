@@ -1,3 +1,4 @@
+--[[
 
 
 --- copied from clink.lua
@@ -90,3 +91,5 @@ function colorful_hg_prompt_filter()
 end
 
 clink.prompt.register_filter(colorful_hg_prompt_filter, 60)
+
+]]

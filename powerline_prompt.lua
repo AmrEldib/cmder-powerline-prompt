@@ -1,84 +1,70 @@
--- Source: https://github.com/AmrEldib/cmder-powerline-prompt 
-
--- Configurations: Provide default values in case config file is missing
--- Config file is "_powerline_config.lua"
--- Sample config file is "_powerline_config.lua.sample"
---- promptValue is whether the displayed prompt is the full path or only the folder name
+-- Configurations
+--- powerline_config_prompt_type is whether the displayed prompt is the full path or only the folder name
  -- Use:
  -- "full" for full path like C:\Windows\System32
-local promptValueFull = "full"
+local promptTypeFull = "full"
  -- "folder" for folder name only like System32
-local promptValueFolder = "folder"
- -- default is promptValueFull
-if not promptValue then
-    promptValue = promptValueFull
+local promptTypeFolder = "folder"
+ -- default is promptTypeFull
+ -- Set default value if no value is already set
+if not powerline_config_prompt_type then
+    powerline_config_prompt_type = promptTypeFull
 end 
+if not powerline_config_prompt_useHomeSymbol then 
+	powerline_config_prompt_useHomeSymbol = true 
+end
 
--- Constants
--- Symbols
-arrowSymbol = ""
--- ANSI Escape Character
-ansiEscChar = "\x1b"
--- ANSI Foreground Colors
-ansiFgClrBlack = "30"
-ansiFgClrRed = "31"
-ansiFgClrGreen = "32"
-ansiFgClrYellow = "33"
-ansiFgClrBlue = "34"
-ansiFgClrMagenta = "35"
-ansiFgClrCyan = "36"
-ansiFgClrWhite = "37"
--- ANSI Background Colors
-ansiBgClrBlack = "40"
-ansiBgClrRed = "41"
-ansiBgClrGreen = "42"
-ansiBgClrYellow = "43"
-ansiBgClrBlue = "44"
-ansiBgClrMagenta = "45"
-ansiBgClrCyan = "46"
-ansiBgClrWhite = "47"
--- Common Colorful Arrows
-arrowBlueToGreen = ansiEscChar.."["..ansiFgClrBlue..";"..ansiBgClrGreen.."m"..arrowSymbol..ansiEscChar.."["..ansiFgClrWhite..";"..ansiBgClrGreen.."m "
-arrowBlueToYellow = ansiEscChar.."["..ansiFgClrBlue..";"..ansiBgClrYellow.."m"..arrowSymbol..ansiEscChar.."["..ansiFgClrBlack..";"..ansiBgClrYellow.."m "
-arrowGreenToBlack = ansiEscChar.."["..ansiFgClrGreen..";"..ansiBgClrBlack.."m"..arrowSymbol
-arrowYellowToBlack = ansiEscChar.."["..ansiFgClrYellow..";"..ansiBgClrBlack.."m"..arrowSymbol
+-- Constacts
+homeSymbol = "~"
 
-
+---
+-- Extracts only the folder name from the input Path
+-- Ex: Input C:\Windows\System32 returns System32
+---
 local function get_folder_name(path)
 	local reversePath = string.reverse(path)
 	local slashIndex = string.find(reversePath, "\\")
 	return string.sub(path, string.len(path) - slashIndex + 2)
 end
 
--- Resets the prompt 
-function lambda_prompt_filter()
-    cwd = clink.get_cwd()
-	if promptValue == promptValueFolder then
+-- * Segment object with these properties:
+---- * isNeeded: sepcifies whether a segment should be added or not. For example: no Git segment is needed in a non-git folder
+---- * text
+---- * textColor: Use one of the color constants. Ex: colorWhite
+---- * fillColor: Use one of the color constants. Ex: colorBlue
+local segment = {
+    isNeeded = true,
+    text = "",
+    textColor = colorWhite, 
+    fillColor = colorBlue
+}
+
+---
+-- Sets the properties of the Segment object, and prepares for a segment to be added
+---
+local function init()
+	cwd = clink.get_cwd()
+	if powerline_config_prompt_type == promptTypeFolder then
 		cwd =  get_folder_name(cwd)
+	else 
+		if powerline_config_prompt_useHomeSymbol then 
+			if string.find(cwd, clink.get_env("HOME")) then 
+				cwd = string.gsub(cwd, clink.get_env("HOME"), homeSymbol)
+			end
+		end
 	end
-    prompt = "\x1b[37;44m{cwd} {git}{hg}\n\x1b[1;30;40m{lamb} \x1b[0m"
-    new_value = string.gsub(prompt, "{cwd}", cwd)
-    clink.prompt.value = string.gsub(new_value, "{lamb}", "λ")
-end
+	segment.textColor = colorWhite
+	segment.fillColor = colorBlue
+	segment.text = cwd.." "
+end 
 
--- override the built-in filters
-clink.prompt.register_filter(lambda_prompt_filter, 55)
+---
+-- Uses the segment properties to add a new segment to the prompt
+---
+local function addAddonSegment()
+    init()
+    addSegment(segment.text, segment.textColor, segment.fillColor)
+end 
 
-
-
--- Prompt consists of multiple segments. Each segment consists of:
--- * Whether a segment should be added or not: isSegmentNeeded
--- * Text: getSegmentText
--- * Color indicating status: getSegmentColor
-
--- There's a core file that contain basic info and functions
--- Then, each type of segment should have its own 'addon' file
--- One file for Git segment, Hg segment, Node.js, Python, etc.
-
--- Info shared between segments
--- * Current folder
--- * Current background color
--- * Current foreground color
-
--- Functions used by all 'addon' code will go into the core file
--- * addSegment(text, color)
+-- Register this addon with Clink
+clink.prompt.register_filter(addAddonSegment, 55)

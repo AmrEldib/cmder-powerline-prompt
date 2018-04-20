@@ -1,11 +1,21 @@
 -- Constants
 local branchSymbol = ""
+local segmentColors = {
+    clean = {
+        fill = colorGreen,
+        text = colorWhite
+    },
+    dirty = {
+        fill = colorYellow,
+        text = colorBlack
+    }
+}
 
 ---
--- Find out current branch
+-- Finds out the name of the current branch
 -- @return {nil|git branch name}
 ---
-local function get_git_branch(git_dir)
+function get_git_branch(git_dir)
     git_dir = git_dir or get_git_dir()
 
     -- If git directory not found then we're probably outside of repo
@@ -23,9 +33,13 @@ local function get_git_branch(git_dir)
     return branch_name or 'HEAD detached at '..HEAD:sub(1, 7)
 end
 
+---
+-- Gets the .git directory
 -- copied from clink.lua
 -- clink.lua is saved under %CMDER_ROOT%\vendor
-local function get_git_dir(path)
+-- @return {bool} indicating there's a git directory or not
+---
+function get_git_dir(path)
 
     -- return parent path for specified entry (either file or directory)
     local function pathname(path)
@@ -66,8 +80,8 @@ local function get_git_dir(path)
 end
 
 ---
- -- Get the status of working dir
- -- @return {bool}
+-- Gets the status of working dir
+-- @return {bool} indicating true for clean, false for dirty
 ---
 function get_git_status()
     local file = io.popen("git --no-optional-locks status --porcelain 2>nul")
@@ -79,44 +93,51 @@ function get_git_status()
     return true
 end
 
--- adopted from clink.lua
--- Modified to add colors and arrow symbols
-function colorful_git_prompt_filter()
+-- * Segment object with these properties:
+---- * isNeeded: sepcifies whether a segment should be added or not. For example: no Git segment is needed in a non-git folder
+---- * text
+---- * textColor: Use one of the color constants. Ex: colorWhite
+---- * fillColor: Use one of the color constants. Ex: colorBlue
+local segment = {
+    isNeeded = false,
+    text = "",
+    textColor = 0,
+    fillColor = 0
+}
 
-    -- Colors for git status
-    local colors = {
-        clean = arrowBlueToGreen,
-        dirty = arrowBlueToYellow,
-    }
-
-    local closingcolors = {
-        clean = " "..arrowGreenToBlack,
-        dirty = " ± "..arrowYellowToBlack,
-    }
-
-    local git_dir = get_git_dir()
-    if git_dir then
+---
+-- Sets the properties of the Segment object, and prepares for a segment to be added
+---
+local function init()
+    segment.isNeeded = get_git_dir()
+    if segment.isNeeded then
         -- if we're inside of git repo then try to detect current branch
         local branch = get_git_branch(git_dir)
         if branch then
             -- Has branch => therefore it is a git folder, now figure out status
-            if get_git_status() then
-                color = colors.clean
-                closingcolor = closingcolors.clean
+            local gitStatus = get_git_status()
+            segment.text = " "..branchSymbol.." "..branch.." "
+            if gitStatus then
+                segment.textColor = segmentColors.clean.text
+                segment.fillColor = segmentColors.clean.fill
             else
-                color = colors.dirty
-                closingcolor = closingcolors.dirty
+                segment.textColor = segmentColors.dirty.text
+                segment.fillColor = segmentColors.dirty.fill
+                segment.text = segment.text.."± "
             end
-
-            --clink.prompt.value = string.gsub(clink.prompt.value, "{git}", color.."  "..branch..closingcolor)
-            clink.prompt.value = string.gsub(clink.prompt.value, "{git}", color.." "..branchSymbol.." "..branch..closingcolor)
-            return false
         end
     end
+end 
 
-    -- No git present or not in git file
-    clink.prompt.value = string.gsub(clink.prompt.value, "{git}", "\x1b[34;40m"..arrowSymbol)
-    return false
-end
+---
+-- Uses the segment properties to add a new segment to the prompt
+---
+local function addAddonSegment()
+    init()
+    if segment.isNeeded then 
+        addSegment(segment.text, segment.textColor, segment.fillColor)
+    end 
+end 
 
-clink.prompt.register_filter(colorful_git_prompt_filter, 60)
+-- Register this addon with Clink
+clink.prompt.register_filter(addAddonSegment, 60)
