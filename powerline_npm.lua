@@ -51,8 +51,6 @@ local function init()
             package_version = ''
     end
 
-    -- clink.prompt.value = string.gsub(clink.prompt.value, "{npm}", "\x1b[34;46m"..arrowSymbol.."\x1b[39;46m "..npmIcon.." "..package_name.."@"..package_version.." \x1b[36;44m"..arrowSymbol)
-
     segment.textColor = colorWhite
     segment.fillColor = colorCyan
     segment.text = " "..npmSymbol.." "..package_name.."@"..package_version.." "
