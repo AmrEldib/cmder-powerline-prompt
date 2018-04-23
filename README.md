@@ -33,8 +33,14 @@ __Alternatively__, if you want to maintain link with the original repo, you can 
 then create a symbolic link from the `%CMDER_ROOT%/config` folder to the `.lua` file.  
 ```
 cd %CMDER_ROOT%/config  
-mklink /H cmder-powerline-prompt.lua <git-repo-folder-name>/cmder-powerline-prompt.lua 
+mklink /H powerline_core.lua <git-repo-folder-name>/powerline_core.lua
+mklink /H powerline_prompt.lua <git-repo-folder-name>/powerline_prompt.lua
+```
+To add Git prompt, add the Git file
+```
+mklink /H powerline_git.lua <git-repo-folder-name>/powerline_git.lua
 ```  
+To add Configurations, create a file named `_powerline_config.lua` that is a copy of the file `_powerline_config.lua.example`
 
 ## Configuration
 
