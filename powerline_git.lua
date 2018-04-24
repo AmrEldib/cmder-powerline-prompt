@@ -1,5 +1,4 @@
 -- Constants
-local branchSymbol = ""
 local segmentColors = {
     clean = {
         fill = colorGreen,
@@ -140,4 +139,4 @@ local function addAddonSegment()
 end 
 
 -- Register this addon with Clink
-clink.prompt.register_filter(addAddonSegment, 60)
+clink.prompt.register_filter(addAddonSegment, delayGit)

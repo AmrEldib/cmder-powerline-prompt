@@ -34,11 +34,6 @@
 ---- * addAddonSegment: uses the segment properties to add a new segment to the prompt
 -- * Must call clink.prompt.register_filter and pass addAddonSegment
 
--- Constants
--- Symbols
-arrowSymbol = ""
-lambSymbol = "λ"
-newLineSymbol = "\n"
 -- ANSI Escape Character
 ansiEscChar = "\x1b"
 -- ANSI Foreground Colors
