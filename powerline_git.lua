@@ -103,7 +103,7 @@ local function init()
             if gitConflict then
                 segment.textColor = segmentColors.conflict.text
                 segment.fillColor = segmentColors.conflict.fill
-				segment.text = segment.text..gitConflictSymbol
+                segment.text = segment.text..gitConflictSymbol
                 return
             end 
 
