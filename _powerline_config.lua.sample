@@ -31,6 +31,10 @@ arrowSymbol = ""
 lambSymbol = "λ"
 newLineSymbol = "\n"
 branchSymbol = ""
-githubSymbol = ""
-npmSymbol = ""
-nodeSymbol = ""
+githubSymbol = "GIT"
+npmSymbol = "NPM"
+nodeSymbol = "NODE"
+
+
+delayGit = 61
+delayNpm = 60
