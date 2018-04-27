@@ -32,16 +32,23 @@ To use another font and still show symbols correctly:
 Download the `.lua` files, and place it in `%CMDER_ROOT%/config` folder.  
 Restart Cmder to load the prompt.
 
-Copy the `_powerline_config.lua.sample` to `%CMDER_ROOT%/config/_powerline_config.lua`. Change the settings to your liking.
-
 **Alternatively**, if you want to maintain link with the original repo, you can clone this repo into any folder  
 `git clone https://github.com/AmrEldib/cmder-powerline-prompt.git git-repo-folder-name`  
 then create a symbolic link from the `%CMDER_ROOT%/config` folder to the `.lua` file.
 
 ```
 cd %CMDER_ROOT%/config  
-mklink /H cmder-powerline-prompt.lua <git-repo-folder-name>/cmder-powerline-prompt.lua
+mklink /H powerline_core.lua <git-repo-folder-name>/powerline_core.lua
+mklink /H powerline_prompt.lua <git-repo-folder-name>/powerline_prompt.lua
 ```
+
+To add Git prompt, add the Git file
+
+```
+mklink /H powerline_git.lua <git-repo-folder-name>/powerline_git.lua
+```
+
+To add Configurations, create a file named `_powerline_config.lua` that is a copy of the file `_powerline_config.lua.sample`
 
 ## Configuration
 
