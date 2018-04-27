@@ -32,6 +32,7 @@ lambSymbol = "λ"
 newLineSymbol = "\n"
 branchSymbol = ""
 githubSymbol = "GIT"
+gitConflictSymbol = "!"
 npmSymbol = "NPM"
 nodeSymbol = "NODE"
 

@@ -7,6 +7,10 @@ local segmentColors = {
     dirty = {
         fill = colorYellow,
         text = colorBlack
+    },
+    conflict = {
+        fill = colorRed,
+        text = colorWhite
     }
 }
 
@@ -55,6 +59,20 @@ function get_git_status()
     return true
 end
 
+---
+-- Gets the conflict status
+-- @return {bool} indicating true for conflict, false for no conflicts
+---
+function get_git_conflict()
+    local file = io.popen("git diff --name-only --diff-filter=U 2>nul")
+    for line in file:lines() do
+        file:close()
+        return true;
+    end
+    file:close()
+    return false
+end
+
 -- * Segment object with these properties:
 ---- * isNeeded: sepcifies whether a segment should be added or not. For example: no Git segment is needed in a non-git folder
 ---- * text
@@ -71,22 +89,34 @@ local segment = {
 -- Sets the properties of the Segment object, and prepares for a segment to be added
 ---
 local function init()
-    segment.isNeeded = get_git_dir()
+    segment.isNeeded = get_git_dir()    
     if segment.isNeeded then
         -- if we're inside of git repo then try to detect current branch
         local branch = get_git_branch(git_dir)
         if branch then
             -- Has branch => therefore it is a git folder, now figure out status
             local gitStatus = get_git_status()
+            local gitConflict = get_git_conflict()
             segment.text = " "..branchSymbol.." "..branch.." "
-            if gitStatus then
+
+
+            if gitConflict = get_git_conflict() then
                 segment.textColor = segmentColors.clean.text
                 segment.fillColor = segmentColors.clean.fill
-            else
-                segment.textColor = segmentColors.dirty.text
-                segment.fillColor = segmentColors.dirty.fill
-                segment.text = segment.text.."± "
+                segment.text = segment.text..gitConflictSymbol
+                return
+            end 
+
+            if gitStatus then
+                segment.textColor = segmentColors.conflict.text
+                segment.fillColor = segmentColors.conflict.fill
+                segment.text = segment.text..""
+                return
             end
+
+            segment.textColor = segmentColors.dirty.text
+            segment.fillColor = segmentColors.dirty.fill
+            segment.text = segment.text.."± "
         end
     end
 end 
