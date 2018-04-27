@@ -29,8 +29,10 @@ To use another font and still show symbols correctly:
 
 # Usage
 
-Download the `.lua` file, and place it in `%CMDER_ROOT%/config` folder.  
+Download the `.lua` files, and place it in `%CMDER_ROOT%/config` folder.  
 Restart Cmder to load the prompt.
+
+Copy the `_powerline_config.lua.sample` to `%CMDER_ROOT%/config/_powerline_config.lua`. Change the settings to your liking.
 
 **Alternatively**, if you want to maintain link with the original repo, you can clone this repo into any folder  
 `git clone https://github.com/AmrEldib/cmder-powerline-prompt.git git-repo-folder-name`  
@@ -43,14 +45,17 @@ mklink /H cmder-powerline-prompt.lua <git-repo-folder-name>/cmder-powerline-prom
 
 ## Configuration
 
-You can modify the prompt to display either the full path or only the folder name.  
-To do this, modify the value of the `promptValue` variable in the `powerline_prompt.lua` file at [this line](https://github.com/AmrEldib/cmder-powerline-prompt/blob/master/powerline_prompt.lua#L10)  
+You can modify the prompt to display either the full path, the folder name or the smart path showing only local path below your current Git folder.
+To do this, modify the value of the `promptValue` variable in the `_powerline_config.lua` setting `powerline_config_prompt_type` value.
 The value could be either:
 
 * `promptValueFull` for full path like `C:\Windows\System32`
 * `promptValueFolder` for folder name only like `System32`
+* `promptValueSmart` for folder `.` when in top of git project `C:\path\ProjectFromGit\`
 
 `promptValueFull` is the default.
+
+By setting `powerline_config_prompt_useHomeSymbol` to `true` in both smart and full mode you can force to shorten path in home directories to `~`.
 
 # Helpful info for customizing Cmder
 
