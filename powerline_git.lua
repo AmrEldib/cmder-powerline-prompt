@@ -100,16 +100,16 @@ local function init()
             segment.text = " "..branchSymbol.." "..branch.." "
 
 
-            if gitConflict = get_git_conflict() then
-                segment.textColor = segmentColors.clean.text
-                segment.fillColor = segmentColors.clean.fill
-                segment.text = segment.text..gitConflictSymbol
+            if gitConflict then
+                segment.textColor = segmentColors.conflict.text
+                segment.fillColor = segmentColors.conflict.fill
+				segment.text = segment.text..gitConflictSymbol
                 return
             end 
 
             if gitStatus then
-                segment.textColor = segmentColors.conflict.text
-                segment.fillColor = segmentColors.conflict.fill
+                segment.textColor = segmentColors.clean.text
+                segment.fillColor = segmentColors.clean.fill
                 segment.text = segment.text..""
                 return
             end
