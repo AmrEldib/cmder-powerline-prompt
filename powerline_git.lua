@@ -55,6 +55,10 @@ function get_git_status()
     return true
 end
 
+function get_git_conflict()
+    return false
+end
+
 -- * Segment object with these properties:
 ---- * isNeeded: sepcifies whether a segment should be added or not. For example: no Git segment is needed in a non-git folder
 ---- * text
