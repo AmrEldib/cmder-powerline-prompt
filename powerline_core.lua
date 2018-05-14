@@ -34,11 +34,6 @@
 ---- * addAddonSegment: uses the segment properties to add a new segment to the prompt
 -- * Must call clink.prompt.register_filter and pass addAddonSegment
 
--- Constants
--- Symbols
-arrowSymbol = ""
-lambSymbol = "λ"
-newLineSymbol = "\n"
 -- ANSI Escape Character
 ansiEscChar = "\x1b"
 -- ANSI Foreground Colors
@@ -182,6 +177,52 @@ end
 ---
 function closePrompt() 
 	clink.prompt.value = clink.prompt.value..newLineSymbol..lambSymbol.." "
+end
+
+---
+-- Gets the .git directory
+-- copied from clink.lua
+-- clink.lua is saved under %CMDER_ROOT%\vendor
+-- @return {bool} indicating there's a git directory or not
+---
+function get_git_dir(path)
+
+	-- return parent path for specified entry (either file or directory)
+	local function pathname(path)
+			local prefix = ""
+			local i = path:find("[\\/:][^\\/:]*$")
+			if i then
+					prefix = path:sub(1, i-1)
+			end
+			return prefix
+	end
+
+	-- Checks if provided directory contains git directory
+	local function has_git_dir(dir)
+			return clink.is_dir(dir..'/.git') and dir..'/.git'
+	end
+
+	local function has_git_file(dir)
+			local gitfile = io.open(dir..'/.git')
+			if not gitfile then return false end
+
+			local git_dir = gitfile:read():match('gitdir: (.*)')
+			gitfile:close()
+
+			return git_dir and dir..'/'..git_dir
+	end
+
+	-- Set default path to current directory
+	if not path or path == '.' then path = clink.get_cwd() end
+
+	-- Calculate parent path now otherwise we won't be
+	-- able to do that inside of logical operator
+	local parent_path = pathname(path)
+
+	return has_git_dir(path)
+			or has_git_file(path)
+			-- Otherwise go up one level and make a recursive call
+			or (parent_path ~= path and get_git_dir(parent_path) or nil)
 end
 
 -- Register filters for resetting the prompt and closing it before and after all addons

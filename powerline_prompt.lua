@@ -5,6 +5,9 @@
 local promptTypeFull = "full"
  -- "folder" for folder name only like System32
 local promptTypeFolder = "folder"
+ -- "smart" for treating git top level folder as homeSymbol
+local promptTypeSmart = "smart"
+
  -- default is promptTypeFull
  -- Set default value if no value is already set
 if not powerline_config_prompt_type then
@@ -14,10 +17,6 @@ if not powerline_config_prompt_useHomeSymbol then
 	powerline_config_prompt_useHomeSymbol = true 
 end
 
--- Constacts
-homeSymbol = "~"
-
----
 -- Extracts only the folder name from the input Path
 -- Ex: Input C:\Windows\System32 returns System32
 ---
@@ -43,16 +42,33 @@ local segment = {
 -- Sets the properties of the Segment object, and prepares for a segment to be added
 ---
 local function init()
-	cwd = clink.get_cwd()
-	if powerline_config_prompt_type == promptTypeFolder then
+    -- fullpath
+    cwd = clink.get_cwd()
+
+    -- show just current folder
+    if powerline_config_prompt_type == promptTypeFolder then
 		cwd =  get_folder_name(cwd)
-	else 
-		if powerline_config_prompt_useHomeSymbol then 
-			if string.find(cwd, clink.get_env("HOME")) then 
-				cwd = string.gsub(cwd, clink.get_env("HOME"), homeSymbol)
-			end
-		end
-	end
+    else    
+        local git_dir = get_git_dir()
+        if powerline_config_prompt_useHomeSymbol and string.find(cwd, clink.get_env("HOME")) and git_dir ==nil then 
+            -- in both smart and full if we are in home, behave like a proper command line
+            cwd = string.gsub(cwd, clink.get_env("HOME"), homeSymbol)
+        else 
+            -- either not in home or home not supported then check the smart path
+            if powerline_config_prompt_type == "smart" then
+                if git_dir then
+                    
+                    cwd = "."..cwd:sub(string.len(git_dir)-4):gsub("\\","/")
+                    if githubSymbol then
+                        cwd = " "..githubSymbol.." "..cwd
+                    end
+                    
+                end
+                -- if not git dir leave the full path
+            end
+        end
+    end
+	
 	segment.textColor = colorWhite
 	segment.fillColor = colorBlue
 	segment.text = cwd.." "

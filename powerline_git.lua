@@ -1,5 +1,4 @@
 -- Constants
-local branchSymbol = ""
 local segmentColors = {
     clean = {
         fill = colorGreen,
@@ -8,6 +7,10 @@ local segmentColors = {
     dirty = {
         fill = colorYellow,
         text = colorBlack
+    },
+    conflict = {
+        fill = colorRed,
+        text = colorWhite
     }
 }
 
@@ -39,45 +42,8 @@ end
 -- clink.lua is saved under %CMDER_ROOT%\vendor
 -- @return {bool} indicating there's a git directory or not
 ---
-function get_git_dir(path)
-
-    -- return parent path for specified entry (either file or directory)
-    local function pathname(path)
-        local prefix = ""
-        local i = path:find("[\\/:][^\\/:]*$")
-        if i then
-            prefix = path:sub(1, i-1)
-        end
-        return prefix
-    end
-
-    -- Checks if provided directory contains git directory
-    local function has_git_dir(dir)
-        return clink.is_dir(dir..'/.git') and dir..'/.git'
-    end
-
-    local function has_git_file(dir)
-        local gitfile = io.open(dir..'/.git')
-        if not gitfile then return false end
-
-        local git_dir = gitfile:read():match('gitdir: (.*)')
-        gitfile:close()
-
-        return git_dir and dir..'/'..git_dir
-    end
-
-    -- Set default path to current directory
-    if not path or path == '.' then path = clink.get_cwd() end
-
-    -- Calculate parent path now otherwise we won't be
-    -- able to do that inside of logical operator
-    local parent_path = pathname(path)
-
-    return has_git_dir(path)
-        or has_git_file(path)
-        -- Otherwise go up one level and make a recursive call
-        or (parent_path ~= path and get_git_dir(parent_path) or nil)
-end
+-- function get_git_dir(path)
+-- MOVED INTO CORE
 
 ---
 -- Gets the status of working dir
@@ -91,6 +57,20 @@ function get_git_status()
     end
     file:close()
     return true
+end
+
+---
+-- Gets the conflict status
+-- @return {bool} indicating true for conflict, false for no conflicts
+---
+function get_git_conflict()
+    local file = io.popen("git diff --name-only --diff-filter=U 2>nul")
+    for line in file:lines() do
+        file:close()
+        return true;
+    end
+    file:close()
+    return false
 end
 
 -- * Segment object with these properties:
@@ -109,22 +89,34 @@ local segment = {
 -- Sets the properties of the Segment object, and prepares for a segment to be added
 ---
 local function init()
-    segment.isNeeded = get_git_dir()
+    segment.isNeeded = get_git_dir()    
     if segment.isNeeded then
         -- if we're inside of git repo then try to detect current branch
         local branch = get_git_branch(git_dir)
         if branch then
             -- Has branch => therefore it is a git folder, now figure out status
             local gitStatus = get_git_status()
+            local gitConflict = get_git_conflict()
             segment.text = " "..branchSymbol.." "..branch.." "
+
+
+            if gitConflict then
+                segment.textColor = segmentColors.conflict.text
+                segment.fillColor = segmentColors.conflict.fill
+                segment.text = segment.text..gitConflictSymbol
+                return
+            end 
+
             if gitStatus then
                 segment.textColor = segmentColors.clean.text
                 segment.fillColor = segmentColors.clean.fill
-            else
-                segment.textColor = segmentColors.dirty.text
-                segment.fillColor = segmentColors.dirty.fill
-                segment.text = segment.text.."± "
+                segment.text = segment.text..""
+                return
             end
+
+            segment.textColor = segmentColors.dirty.text
+            segment.fillColor = segmentColors.dirty.fill
+            segment.text = segment.text.."± "
         end
     end
 end 
@@ -140,4 +132,4 @@ local function addAddonSegment()
 end 
 
 -- Register this addon with Clink
-clink.prompt.register_filter(addAddonSegment, 60)
+clink.prompt.register_filter(addAddonSegment, delayGit)
