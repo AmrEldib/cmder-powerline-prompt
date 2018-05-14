@@ -22,8 +22,9 @@ To use another font and still show symbols correctly:
 * Go to Cmder Settings > Main
 * Choose Main console font to be what you prefer
 * Choose _Alternative font_ to be _Anonymice Powerline_
-* Modify the value of _Unicode ranges_ to add: `E0A0; E0B0;`
-  * for extra symbols set in `powerline_config.lua` (like npm logo for node module or git project for smart path resolving) set the _Alternative font_ to one of your choosing.
+* Modify the value of _Unicode ranges_ to add: `E0A0; E0B0;` (or appropriate)
+  * for extra symbols set in `powerline_config.lua` (like npm logo for node module or git project for smart path resolving) set the _Alternative font_ 
+to one of your choosing (for example: http://vorillaz.github.io/devicons/#/main).
     ![screenshot](fonts.png)
 * Save Settings
 
