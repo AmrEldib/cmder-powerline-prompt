@@ -94,6 +94,33 @@ currentSegments = ""
 currentFillColor = colorBlue.background
 currentTextColor = colorWhite.foreground
 
+-- Constants
+-- Symbols
+newLineSymbol = "\n"
+
+-- Default symbols
+-- Some symbols are required. If the user fails to provide them in the config file, they're created here
+-- Prompt displayed instead of user's home folder e.g. C:\Users\username
+if not plc_prompt_homeSymbol then 
+	plc_prompt_homeSymbol = "~"
+end 
+-- Symbol connecting each segment of the prompt. Be careful before you change this.
+if not plc_prompt_arrowSymbol then
+	plc_prompt_arrowSymbol = ""
+end
+-- Symbol displayed in the new line below the prompt.
+if not plc_prompt_lambSymbol then
+	plc_prompt_lambSymbol = "λ"
+end
+-- Version control (e.g. Git) branch symbol. Used to indicate the name of a branch.
+if not plc_git_branchSymbol then
+	plc_git_branchSymbol = ""
+end 
+-- Version control (e.g. Git) conflict symbol. Used to indicate there's a conflict.
+if not plc_git_conflictSymbol then
+	plc_git_conflictSymbol = "!"
+end
+
 ---
 -- Adds an arrow symbol to the input text with the correct colors
 -- text {string} input text to which an arrow symbol will be added
@@ -105,7 +132,7 @@ function addArrow(text, oldColor, newColor)
 	-- Old color is the color of the previous segment
 	-- New color is the color of the next segment
 	-- An arrow is a character written using the old color on a background of the new color
-	text = addTextWithColor(text, arrowSymbol, oldColor.foreground, newColor.background)
+	text = addTextWithColor(text, plc_prompt_arrowSymbol, oldColor.foreground, newColor.background)
 	return text
 end 
 
@@ -176,7 +203,7 @@ end
 -- Closes the prompts with a new line and the lamb symbol
 ---
 function closePrompt() 
-	clink.prompt.value = clink.prompt.value..newLineSymbol..lambSymbol.." "
+	clink.prompt.value = clink.prompt.value..newLineSymbol..plc_prompt_lambSymbol.." "
 end
 
 ---

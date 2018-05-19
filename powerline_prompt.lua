@@ -1,20 +1,20 @@
 -- Configurations
---- powerline_config_prompt_type is whether the displayed prompt is the full path or only the folder name
+--- plc_prompt_type is whether the displayed prompt is the full path or only the folder name
  -- Use:
  -- "full" for full path like C:\Windows\System32
 local promptTypeFull = "full"
  -- "folder" for folder name only like System32
 local promptTypeFolder = "folder"
- -- "smart" for treating git top level folder as homeSymbol
+ -- "smart" to switch in git repo to folder name instead of full path 
 local promptTypeSmart = "smart"
 
  -- default is promptTypeFull
  -- Set default value if no value is already set
-if not powerline_config_prompt_type then
-    powerline_config_prompt_type = promptTypeFull
+if not plc_prompt_type then
+    plc_prompt_type = promptTypeFull
 end 
-if not powerline_config_prompt_useHomeSymbol then 
-	powerline_config_prompt_useHomeSymbol = true 
+if not plc_prompt_useHomeSymbol then 
+	plc_prompt_useHomeSymbol = true 
 end
 
 -- Extracts only the folder name from the input Path
@@ -46,32 +46,32 @@ local function init()
     cwd = clink.get_cwd()
 
     -- show just current folder
-    if powerline_config_prompt_type == promptTypeFolder then
+    if plc_prompt_type == promptTypeFolder then
 		cwd =  get_folder_name(cwd)
     else    
+    -- show 'smart' folder name
+    -- This will show the full folder path unless a Git repo is active in the folder
+    -- If a Git repo is active, it will only show the folder name
+    -- This helps users avoid having a super long prompt
         local git_dir = get_git_dir()
-        if powerline_config_prompt_useHomeSymbol and string.find(cwd, clink.get_env("HOME")) and git_dir ==nil then 
+        if plc_prompt_useHomeSymbol and string.find(cwd, clink.get_env("HOME")) and git_dir ==nil then 
             -- in both smart and full if we are in home, behave like a proper command line
-            cwd = string.gsub(cwd, clink.get_env("HOME"), homeSymbol)
+            cwd = string.gsub(cwd, clink.get_env("HOME"), plc_prompt_homeSymbol)
         else 
             -- either not in home or home not supported then check the smart path
-            if powerline_config_prompt_type == "smart" then
+            if plc_prompt_type == promptTypeSmart then
                 if git_dir then
-                    
-                    cwd = "."..cwd:sub(string.len(git_dir)-4):gsub("\\","/")
-                    if githubSymbol then
-                        cwd = " "..githubSymbol.." "..cwd
+                    cwd = get_folder_name(cwd)
+                    if gitSymbol then
+                        cwd = gitSymbol.." "..cwd
                     end
-                    
                 end
                 -- if not git dir leave the full path
             end
         end
     end
 	
-	segment.textColor = colorWhite
-	segment.fillColor = colorBlue
-	segment.text = cwd.." "
+	segment.text = " "..cwd.." "
 end 
 
 ---

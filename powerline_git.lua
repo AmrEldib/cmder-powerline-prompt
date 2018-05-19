@@ -97,13 +97,15 @@ local function init()
             -- Has branch => therefore it is a git folder, now figure out status
             local gitStatus = get_git_status()
             local gitConflict = get_git_conflict()
-            segment.text = " "..branchSymbol.." "..branch.." "
+            segment.text = " "..plc_git_branchSymbol.." "..branch.." "
 
 
             if gitConflict then
                 segment.textColor = segmentColors.conflict.text
                 segment.fillColor = segmentColors.conflict.fill
-                segment.text = segment.text..gitConflictSymbol
+                if plc_git_conflictSymbol then
+                    segment.text = segment.text..plc_git_conflictSymbol
+                end 
                 return
             end 
 
@@ -132,4 +134,4 @@ local function addAddonSegment()
 end 
 
 -- Register this addon with Clink
-clink.prompt.register_filter(addAddonSegment, delayGit)
+clink.prompt.register_filter(addAddonSegment, 61)

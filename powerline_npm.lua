@@ -1,5 +1,3 @@
--- Constants
-
 local function get_package_json_dir(path)
 
   -- return parent path for specified entry (either file or directory)
@@ -28,8 +26,8 @@ end
 local segment = {
   isNeeded = false,
   text = "",
-  textColor = 0,
-  fillColor = 0
+  textColor = colorWhite,
+  fillColor = colorCyan
 }
 
 ---
@@ -51,10 +49,11 @@ local function init()
             package_version = ''
     end
 
-    segment.textColor = colorWhite
-    segment.fillColor = colorCyan
-    segment.text = " "..npmSymbol.." "..package_name.."@"..package_version.." "
-          
+    if npmSymbol then
+      segment.text = " "..npmSymbol.." "..package_name.."@"..package_version.." "
+    else
+      segment.text = " "..package_name.."@"..package_version.." "
+    end 
   end
 end 
 
@@ -69,4 +68,4 @@ local function addAddonSegment()
 end 
 
 -- Register this addon with Clink
-clink.prompt.register_filter(addAddonSegment, delayNpm)
+clink.prompt.register_filter(addAddonSegment, 60)
