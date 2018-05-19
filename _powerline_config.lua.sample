@@ -1,22 +1,53 @@
-
 -- Configurations
 -- Config file is "_powerline_config.lua"
 -- Sample config file is "_powerline_config.lua.sample"
 
 -- Configurations are stored as variables
 -- Each variable is usually named in this pattern:
--- powerline_config_<addon>_<property>
--- Ex: powerline_config_prompt_type is variable for the prompt addon for specifying the type of prompt to show
+-- plc_<addon>_<property>
+-- Where 'plc' is short for 'powerline config'
+-- Ex: plc_prompt_type is variable for the prompt addon for specifying the type of prompt to show
 -- Config for powerline core are named like this:
--- powerline_config_core_<property>
+-- plc_core_<property>
 
---- powerline_config_prompt_type is whether the displayed prompt is the full path or only the folder name
+---------------------------
+-- HOW TO SET CONFIG VALUES
+---------------------------
+-- REQUIRED config values must have a value, even if it's an empty zero-length string.
+-- OPTIONAL config values can be disabled by commenting the entry. Just add -- before the line.
+-- Always keep the _powerline_config.lua.sample file to restore to if your config got messed up.
+
+
+--- REQUIRED. powerline_config_prompt_type is whether the displayed prompt is the full path or only the folder name
  -- Use:
  -- "full" for full path like C:\Windows\System32
  -- "folder" for folder name only like System32
+ -- "smart" to switch in git repo to folder name instead of full path 
  -- default is full
-powerline_config_prompt_type = "full"
---- powerline_config_prompt_useHomeSymbol is whether to show ~ instead of the full path to the user's home folder
+plc_prompt_type = "smart"
+--- REQUIRED. powerline_config_prompt_useHomeSymbol is whether to show ~ instead of the full path to the user's home folder
  -- Use true or false
  -- default is true
-powerline_config_prompt_useHomeSymbol = true  
+plc_prompt_useHomeSymbol = true  
+
+-- Symbols
+-- REQUIRED. Prompt displayed instead of user's home folder e.g. C:\Users\username
+plc_prompt_homeSymbol = "~"
+
+-- REQUIRED. Symbol connecting each segment of the prompt. Be careful before you change this.
+plc_prompt_arrowSymbol = ""
+
+-- REQUIRED. Symbol displayed in the new line below the prompt.
+plc_prompt_lambSymbol = "λ"
+
+-- REQUIRED. Version control (e.g. Git) branch symbol. Used to indicate the name of a branch.
+plc_git_branchSymbol = ""
+
+-- REQUIRED. Version control (e.g. Git) conflict symbol. Used to indicate there's a conflict.
+plc_git_conflictSymbol = "!"
+
+-- OPTIONAL. Git symbol used in the folder segment when 'smart' prompt is used and the user navigates to a folder with Git repo
+--plc_prompt_gitSymbol = "GIT"
+
+-- OPTIONAL. npm Symbol used in the NPM segment as visual indicator.
+--plc_npm_npmSymbol = "NPM"
