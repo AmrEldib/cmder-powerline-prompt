@@ -41,7 +41,7 @@ local function init()
 
     local package_name = string.match(package_info, '"name"%s*:%s*"(%g-)"')
     if package_name == nil then
-            package_version = ''
+            package_name = ''
     end
 
     local package_version = string.match(package_info, '"version"%s*:%s*"(.-)"')
