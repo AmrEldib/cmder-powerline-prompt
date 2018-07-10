@@ -40,7 +40,7 @@ local function get_dir_contains(path, dirname)
         return pathname(path)
     end
 
-    -- Checks if provided directory contains git directory
+    -- Checks if provided directory contains hg directory
     local function has_specified_dir(path, specified_dir)
         if path == nil then path = '.' end
         local found_dirs = clink.find_dirs(path..'/'..specified_dir)
@@ -51,7 +51,7 @@ local function get_dir_contains(path, dirname)
     -- Set default path to current directory
     if path == nil then path = '.' end
 
-    -- If we're already have .git directory here, then return current path
+    -- If we're already have .hg directory here, then return current path
     if has_specified_dir(path, dirname) then
         return path..'/'..dirname
     else
@@ -85,7 +85,7 @@ local function init()
     segments = {}
 
     if get_hg_dir() then
-        -- if we're inside of git repo then try to detect current branch
+        -- if we're inside of hg repo then try to detect current branch
         -- 'hg id' gives us BOTH the branch name AND an indicator that there
         -- are uncommitted changes, in one fast(er) call
         local pipe = io.popen("hg id 2>&1")
@@ -102,11 +102,11 @@ local function init()
             end
 
             -- Branch segment
-            table.insert(segments, {" " .. plc_git_branchSymbol .. " " .. items[2] .. " ", segmentColors.branch.text, segmentColors.branch.fill})
+            table.insert(segments, {" " .. plc_hg_branchSymbol .. " " .. items[2] .. " ", segmentColors.branch.text, segmentColors.branch.fill})
 
             if string.sub(items[1], -1, -1) == "+" then
                 -- Dirty segment
-                table.insert(segments, {"  ",  segmentColors.dirty.text,  segmentColors.dirty.fill})
+                table.insert(segments, {plc_hg_conflictSymbol,  segmentColors.dirty.text,  segmentColors.dirty.fill})
             end
         end
     end

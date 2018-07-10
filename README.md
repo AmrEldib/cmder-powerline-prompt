@@ -111,7 +111,8 @@ This section is to acknowledge their contributions and thank them. If you find t
 * [0NG](https://github.com/0NG) [#27](https://github.com/AmrEldib/cmder-powerline-prompt/pull/27)
 * [mattdkerr](https://github.com/mattdkerr) [#29](https://github.com/AmrEldib/cmder-powerline-prompt/pull/29)
 * [ivanjonas](https://github.com/ivanjonas) [#32](https://github.com/AmrEldib/cmder-powerline-prompt/pull/32)
-* [sp3c1](https://github.com/sp3c1) contributed the npm addon [#33](https://github.com/AmrEldib/cmder-powerline-prompt/pull/33)
+* [sp3c1](https://github.com/sp3c1) contributed the npm addon [#33](https://github.com/AmrEldib/cmder-powerline-prompt/pull/33)  
+* [Bob Hood](https://github.com/b0bh00d) contributed the new Mercurial addon [#40](https://github.com/AmrEldib/cmder-powerline-prompt/pull/40)  
 
 I'd like to thank all who share their code with everyone for their time and effort.
 
