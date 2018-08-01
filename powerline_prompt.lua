@@ -5,16 +5,20 @@
 local promptTypeFull = "full"
  -- "folder" for folder name only like System32
 local promptTypeFolder = "folder"
- -- "smart" to switch in git repo to folder name instead of full path 
+ -- "smart" to switch in git repo to folder name instead of full path
 local promptTypeSmart = "smart"
 
  -- default is promptTypeFull
  -- Set default value if no value is already set
 if not plc_prompt_type then
     plc_prompt_type = promptTypeFull
-end 
-if not plc_prompt_useHomeSymbol then 
-	plc_prompt_useHomeSymbol = true 
+end
+if not plc_prompt_useHomeSymbol then
+	plc_prompt_useHomeSymbol = true
+end
+-- default is "HOME"
+if not plc_home_env then
+    plc_home_env = "HOME"
 end
 
 -- Extracts only the folder name from the input Path
@@ -34,7 +38,7 @@ end
 local segment = {
     isNeeded = true,
     text = "",
-    textColor = colorWhite, 
+    textColor = colorWhite,
     fillColor = colorBlue
 }
 
@@ -48,16 +52,16 @@ local function init()
     -- show just current folder
     if plc_prompt_type == promptTypeFolder then
 		cwd =  get_folder_name(cwd)
-    else    
+    else
     -- show 'smart' folder name
     -- This will show the full folder path unless a Git repo is active in the folder
     -- If a Git repo is active, it will only show the folder name
     -- This helps users avoid having a super long prompt
         local git_dir = get_git_dir()
-        if plc_prompt_useHomeSymbol and string.find(cwd, clink.get_env("HOME")) and git_dir ==nil then 
+        if plc_prompt_useHomeSymbol and string.find(cwd, clink.get_env(plc_home_env)) and git_dir ==nil then
             -- in both smart and full if we are in home, behave like a proper command line
-            cwd = string.gsub(cwd, clink.get_env("HOME"), plc_prompt_homeSymbol)
-        else 
+            cwd = string.gsub(cwd, clink.get_env(plc_home_env), plc_prompt_homeSymbol)
+        else
             -- either not in home or home not supported then check the smart path
             if plc_prompt_type == promptTypeSmart then
                 if git_dir then
@@ -70,9 +74,9 @@ local function init()
             end
         end
     end
-	
+
 	segment.text = " "..cwd.." "
-end 
+end
 
 ---
 -- Uses the segment properties to add a new segment to the prompt
@@ -80,7 +84,7 @@ end
 local function addAddonSegment()
     init()
     addSegment(segment.text, segment.textColor, segment.fillColor)
-end 
+end
 
 -- Register this addon with Clink
 clink.prompt.register_filter(addAddonSegment, 55)
