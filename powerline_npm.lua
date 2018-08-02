@@ -50,22 +50,22 @@ local function init()
     end
 
     if plc_npm_npmSymbol then
-      segment.text = " "..npmSymbol.." "..package_name.."@"..package_version.." "
+      segment.text = " "..plc_npm_npmSymbol.." "..package_name.."@"..package_version.." "
     else
       segment.text = " "..package_name.."@"..package_version.." "
-    end 
+    end
   end
-end 
+end
 
 ---
 -- Uses the segment properties to add a new segment to the prompt
 ---
 local function addAddonSegment()
   init()
-  if segment.isNeeded then 
+  if segment.isNeeded then
       addSegment(segment.text, segment.textColor, segment.fillColor)
-  end 
-end 
+  end
+end
 
 -- Register this addon with Clink
 clink.prompt.register_filter(addAddonSegment, 60)
