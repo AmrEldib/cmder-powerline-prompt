@@ -89,7 +89,7 @@ local segment = {
 -- Sets the properties of the Segment object, and prepares for a segment to be added
 ---
 local function init()
-    segment.isNeeded = get_git_dir()    
+    segment.isNeeded = get_git_dir()
     if segment.isNeeded then
         -- if we're inside of git repo then try to detect current branch
         local branch = get_git_branch(git_dir)
@@ -105,9 +105,9 @@ local function init()
                 segment.fillColor = segmentColors.conflict.fill
                 if plc_git_conflictSymbol then
                     segment.text = segment.text..plc_git_conflictSymbol
-                end 
+                end
                 return
-            end 
+            end
 
             if gitStatus then
                 segment.textColor = segmentColors.clean.text
@@ -121,17 +121,17 @@ local function init()
             segment.text = segment.text.."± "
         end
     end
-end 
+end
 
 ---
 -- Uses the segment properties to add a new segment to the prompt
 ---
 local function addAddonSegment()
     init()
-    if segment.isNeeded then 
+    if segment.isNeeded then
         addSegment(segment.text, segment.textColor, segment.fillColor)
-    end 
-end 
+    end
+end
 
 -- Register this addon with Clink
 clink.prompt.register_filter(addAddonSegment, 61)

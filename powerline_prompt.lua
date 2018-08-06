@@ -45,6 +45,7 @@ local segment = {
 ---
 -- Sets the properties of the Segment object, and prepares for a segment to be added
 ---
+local git_root_dir = nil
 local function init()
     -- fullpath
     cwd = clink.get_cwd()
@@ -58,14 +59,21 @@ local function init()
     -- If a Git repo is active, it will only show the folder name
     -- This helps users avoid having a super long prompt
         local git_dir = get_git_dir()
+        if git_dir and git_root_dir == nil then
+            -- get the root of the git directory and save it
+            git_root_dir = git_dir:gsub("/.git", "")
+        end
         if plc_prompt_useHomeSymbol and string.find(cwd, clink.get_env(plc_home_env)) and git_dir ==nil then
             -- in both smart and full if we are in home, behave like a proper command line
+            git_root_dir = nil
             cwd = string.gsub(cwd, clink.get_env(plc_home_env), plc_prompt_homeSymbol)
         else
             -- either not in home or home not supported then check the smart path
             if plc_prompt_type == promptTypeSmart then
                 if git_dir then
-                    cwd = get_folder_name(cwd)
+                    -- get the root git folder name and reappend any part of the directory that comes after
+                    -- replace special characters that might be in the directory name first
+                    cwd = get_folder_name(git_root_dir)..cwd:gsub("%-",""):gsub("(.*)("..git_root_dir..")", "")
                     if plc_prompt_gitSymbol then
                         cwd = plc_prompt_gitSymbol.." "..cwd
                     end
