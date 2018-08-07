@@ -29,11 +29,12 @@ plc_prompt_type = "smart"
  -- Use true or false
  -- default is true
 plc_prompt_useHomeSymbol = true
---- REQUIRED
+--- OPTIONAL
  -- changes the environment variable where the home symbol will be shown (if enabled)
- -- examples: "HOME", "USERPROFILE", "HOMEDRIVE", etc
- -- default: "HOME"
-plc_home_env = "HOME"
+ -- Use:
+ -- "HOME", "USERPROFILE", "HOMEDRIVE", etc
+ -- default is "HOME"
+--plc_prompt_homeSymbolEnvironment = "USERPROFILE"
 
 -- Symbols
 -- REQUIRED. Prompt displayed instead of user's home folder e.g. C:\Users\username

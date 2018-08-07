@@ -16,9 +16,8 @@ end
 if not plc_prompt_useHomeSymbol then
 	plc_prompt_useHomeSymbol = true
 end
--- default is "HOME"
-if not plc_home_env then
-    plc_home_env = "HOME"
+if not plc_prompt_homeSymbolEnvironment then
+    plc_prompt_homeSymbolEnvironment = "HOME"
 end
 
 -- Extracts only the folder name from the input Path
@@ -63,10 +62,10 @@ local function init()
             -- get the root of the git directory and save it
             git_root_dir = git_dir:gsub("/.git", "")
         end
-        if plc_prompt_useHomeSymbol and string.find(cwd, clink.get_env(plc_home_env)) and git_dir ==nil then
+        if plc_prompt_useHomeSymbol and string.find(cwd, clink.get_env(plc_prompt_homeSymbolEnvironment)) and git_dir ==nil then
             -- in both smart and full if we are in home, behave like a proper command line
             git_root_dir = nil
-            cwd = string.gsub(cwd, clink.get_env(plc_home_env), plc_prompt_homeSymbol)
+            cwd = string.gsub(cwd, clink.get_env(plc_prompt_homeSymbolEnvironment), plc_prompt_homeSymbol)
         else
             -- either not in home or home not supported then check the smart path
             if plc_prompt_type == promptTypeSmart then
