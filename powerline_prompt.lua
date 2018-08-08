@@ -71,8 +71,10 @@ local function init()
             if plc_prompt_type == promptTypeSmart then
                 if git_dir then
                     -- get the root git folder name and reappend any part of the directory that comes after
-                    -- replace special characters that might be in the directory name first
-                    cwd = get_folder_name(git_root_dir)..cwd:gsub("%-",""):gsub("(.*)("..git_root_dir..")", "")
+                    -- replaces all special characters in cwd with "" and then replaces the cwd up to git_root_dir with ""
+                    -- Ex: C:\Users\username\cmder-powerline-prompt\innerdir -> cmder-powerline-prompt\innerdir
+                    local appended_dir = cwd:gsub("[%(%)%.%%%+%-%*%?%[%^%&]",""):gsub("(.*)("..git_root_dir..")", "")
+                    cwd = get_folder_name(git_root_dir)..appended_dir
                     if plc_prompt_gitSymbol then
                         cwd = plc_prompt_gitSymbol.." "..cwd
                     end
