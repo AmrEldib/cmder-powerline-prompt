@@ -64,7 +64,6 @@ local function init()
         end
         if plc_prompt_useHomeSymbol and string.find(cwd, clink.get_env(plc_prompt_homeSymbolEnvironment)) and git_dir ==nil then
             -- in both smart and full if we are in home, behave like a proper command line
-            git_root_dir = nil
             cwd = string.gsub(cwd, clink.get_env(plc_prompt_homeSymbolEnvironment), plc_prompt_homeSymbol)
         else
             -- either not in home or home not supported then check the smart path
@@ -79,7 +78,8 @@ local function init()
                         cwd = plc_prompt_gitSymbol.." "..cwd
                     end
                 end
-                -- if not git dir leave the full path
+                -- if not git dir leave the full path and reset the git_root_dir
+                git_root_dir = nil
             end
         end
     end
