@@ -236,7 +236,10 @@ function get_git_dir(path)
 			local git_dir = gitfile:read():match('gitdir: (.*)')
 			gitfile:close()
 
-			return git_dir and dir..'/'..git_dir
+			-- gitdir can (apparently) be absolute or relative:
+			local file_when_absolute = git_dir and clink.is_dir(git_dir) and git_dir
+			local file_when_relative = git_dir and clink.is_dir(dir..'/'..git_dir) and dir..'/'..git_dir
+			return (file_when_absolute or file_when_relative)
 	end
 
 	-- Set default path to current directory
