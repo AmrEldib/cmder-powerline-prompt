@@ -88,13 +88,17 @@ local function init()
         -- if we're inside of hg repo then try to detect current branch
         -- 'hg id' gives us BOTH the branch name AND an indicator that there
         -- are uncommitted changes, in one fast(er) call
-        local pipe = io.popen("hg id 2>&1")
+        local pipe = io.popen("hg id -ib 2>&1")
         local output = pipe:read('*all')
         local rc = { pipe:close() }
 
+        -- strip the trailing newline from the branch name
+        local n = #output
+        while n > 0 and output:find("^%s", n) do n = n - 1 end
+        output = output:sub(1, n)
+
         if output ~= nil and
            string.sub(output,1,7) ~= "abort: " and             -- not an HG working copy
-           string.sub(output,1,12) ~= "000000000000" and       -- empty wc (needs update)
            (not string.find(output, "is not recognized")) then -- 'hg' not in path
             local items = {}
             for i in string.gmatch(output, "%S+") do
@@ -102,7 +106,7 @@ local function init()
             end
 
             -- Branch segment
-            table.insert(segments, {" " .. plc_hg_branchSymbol .. " " .. items[2] .. " ", segmentColors.branch.text, segmentColors.branch.fill})
+            table.insert(segments, {" " .. plc_git_branchSymbol .. " " .. items[2] .. " ", segmentColors.branch.text, segmentColors.branch.fill})
 
             if string.sub(items[1], -1, -1) == "+" then
                 -- Dirty segment
@@ -123,4 +127,6 @@ local function addAddonSegment()
 end 
 
 -- Register this addon with Clink
-clink.prompt.register_filter(addAddonSegment, 61)
+-- Set the priority one higher than the Powerline Prompt so the static-width
+-- branch info always appears first, and the path expands to the right...
+clink.prompt.register_filter(addAddonSegment, 54)
