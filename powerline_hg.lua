@@ -110,7 +110,7 @@ local function init()
 
             if string.sub(items[1], -1, -1) == "+" then
                 -- Dirty segment
-                table.insert(segments, {plc_hg_conflictSymbol,  segmentColors.dirty.text,  segmentColors.dirty.fill})
+                table.insert(segments, {" " .. plc_hg_changesSymbol .. " ",  segmentColors.dirty.text,  segmentColors.dirty.fill})
             end
         end
     end
