@@ -58,3 +58,6 @@ plc_hg_conflictSymbol = "!"
 
 -- OPTIONAL. npm Symbol used in the NPM segment as visual indicator.
 --plc_npm_npmSymbol = "NPM"
+
+-- OPTIONAL. maven Symbol used in the maven segment as visual indicator.
+--plc_npm_npmSymbol = "MVN"
