@@ -120,6 +120,11 @@ end
 if not plc_git_conflictSymbol then
 	plc_git_conflictSymbol = "!"
 end
+-- Version control (e.g. Git) conflict symbol. Used to indicate there's a conflict.
+if not plc_hg_changesSymbol then
+    -- This is a document glyph in the Anonymice Powerline font
+	plc_hg_changesSymbol = ""
+end
 
 ---
 -- Adds an arrow symbol to the input text with the correct colors
