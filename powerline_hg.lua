@@ -85,30 +85,24 @@ local function init()
     segments = {}
 
     if get_hg_dir() then
-        -- if we're inside of hg repo then try to detect current branch
-        -- 'hg id' gives us BOTH the branch name AND an indicator that there
-        -- are uncommitted changes, in one fast(er) call
-        local pipe = io.popen("hg id -ib 2>&1")
+        -- we're inside of hg repo, read branch and status
+        local pipe = io.popen("hg branch 2>&1")
         local output = pipe:read('*all')
         local rc = { pipe:close() }
 
         -- strip the trailing newline from the branch name
         local n = #output
         while n > 0 and output:find("^%s", n) do n = n - 1 end
-        output = output:sub(1, n)
+        local branch = output:sub(1, n)
 
-        if output ~= nil and
-           string.sub(output,1,7) ~= "abort: " and             -- not an HG working copy
-           (not string.find(output, "is not recognized")) then -- 'hg' not in path
-            local items = {}
-            for i in string.gmatch(output, "%S+") do
-                table.insert(items, i)
-            end
-
-            -- Branch segment
-            table.insert(segments, {" " .. plc_git_branchSymbol .. " " .. items[2] .. " ", segmentColors.branch.text, segmentColors.branch.fill})
-
-            if string.sub(items[1], -1, -1) == "+" then
+        if branch ~= nil and
+           string.sub(branch,1,7) ~= "abort: " and             -- not an HG working copy
+           (not string.find(branch, "is not recognized")) then -- 'hg' not in path
+            table.insert(segments, {" " .. plc_git_branchSymbol .. " " .. branch .. " ", segmentColors.branch.text, segmentColors.branch.fill})
+            local pipe = io.popen("hg status -amrd 2>&1")
+            local output = pipe:read('*all')
+            local rc = { pipe:close() }
+            if output ~= nil and output ~= "" then
                 -- Dirty segment
                 table.insert(segments, {" " .. plc_hg_changesSymbol .. " ",  segmentColors.dirty.text,  segmentColors.dirty.fill})
             end
