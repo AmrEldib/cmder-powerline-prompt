@@ -8,6 +8,10 @@ local segmentColors = {
         fill = colorYellow,
         text = colorBlack
     },
+    statusSegment={
+        fill = colorMagenta,
+        text = colorWhite
+    },
     conflict = {
         fill = colorRed,
         text = colorWhite
@@ -50,13 +54,32 @@ end
 -- @return {bool} indicating true for clean, false for dirty
 ---
 function get_git_status()
-    local file = io.popen("git --no-optional-locks status --porcelain 2>nul")
+    local file = io.popen("git -c core.quotepath=false -c color.status=false status --short --branch 2>nul")
+    local counter=0
+    local status={
+        behind = 0,
+        ahead = 0,
+        files = 0
+    }
     for line in file:lines() do
-        file:close()
-        return false
+        if counter==0 then
+            status.behind=tonumber(string.match(line,"%[behind (%d*)%]"))
+            if not status.behind then
+                status.behind=0
+            end
+            status.ahead= tonumber(string.match(line,"%[ahead (%d*)%]"))
+            if not status.ahead then
+                status.ahead=0
+            end
+        end
+        counter=counter+1
     end
+    
+    status.files=counter-1
+
+
     file:close()
-    return true
+    return status
 end
 
 ---
@@ -85,6 +108,31 @@ local segment = {
     fillColor = 0
 }
 
+local statusSegment={
+    isNeeded = false,
+    text = "",
+    textColor = segmentColors.statusSegment.text,
+    fillColor =segmentColors.statusSegment.fill
+}
+
+local function updateStatusSegment(gitStatus)
+   statusSegment.isNeeded= gitStatus.ahead>0 or gitStatus.behind>0
+    if not statusSegment.isNeeded then
+        return
+    end
+
+    local statusText=""
+   
+    if plc_git_aheadSymbol and gitStatus.ahead then
+        statusText=" "..plc_git_aheadSymbol..gitStatus.ahead
+    end
+
+    if plc_git_behindSymbol and gitStatus.behind then
+        statusText=statusText.." "..plc_git_behindSymbol..gitStatus.behind
+    end
+   
+    statusSegment.text = statusText
+end
 ---
 -- Sets the properties of the Segment object, and prepares for a segment to be added
 ---
@@ -107,18 +155,21 @@ local function init()
                     segment.text = segment.text..plc_git_conflictSymbol
                 end 
                 return
-            end 
+            end             
 
-            if gitStatus then
+            if gitStatus.files>0 then
+                segment.textColor = segmentColors.dirty.text
+                segment.fillColor = segmentColors.dirty.fill
+                if plc_git_fileCountSymbol then 
+                    segment.text=segment.text..plc_git_fileCountSymbol..gitStatus.files
+                end
+            else
                 segment.textColor = segmentColors.clean.text
                 segment.fillColor = segmentColors.clean.fill
-                segment.text = segment.text..""
-                return
             end
+            
 
-            segment.textColor = segmentColors.dirty.text
-            segment.fillColor = segmentColors.dirty.fill
-            segment.text = segment.text.."± "
+            updateStatusSegment(gitStatus)
         end
     end
 end 
@@ -130,6 +181,9 @@ local function addAddonSegment()
     init()
     if segment.isNeeded then 
         addSegment(segment.text, segment.textColor, segment.fillColor)
+    end 
+    if statusSegment.isNeeded then 
+        addSegment(statusSegment.text, statusSegment.textColor, statusSegment.fillColor)
     end 
 end 
 
