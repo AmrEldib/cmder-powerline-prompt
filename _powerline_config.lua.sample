@@ -49,9 +49,12 @@ plc_git_conflictSymbol = "!"
 -- OPTIONAL. Git symbol used in the folder segment when 'smart' prompt is used and the user navigates to a folder with Git repo
 plc_prompt_gitSymbol = ""
 
+-- OPTIONAL. Git symbol used in the git status segment. Used to indicate number of dirty files
+plc_git_fileCountSymbol="±"
+
+-- OPTIONAL. Git symbol used in the git ahead\behind segment. Used to indicate inbound and outgoing commits
 plc_git_behindSymbol=""
 plc_git_aheadSymbol=""
-plc_git_fileCountSymbol="±"
 
 -- OPTIONAL. npm Symbol used in the NPM segment as visual indicator.
 --plc_npm_npmSymbol = "NPM"
