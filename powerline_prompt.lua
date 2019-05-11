@@ -62,8 +62,8 @@ local function init()
             if plc_prompt_type == promptTypeSmart then
                 if git_dir then
                     cwd = get_folder_name(cwd)
-                    if plc_npm_gitSymbol then
-                        cwd = gitSymbol.." "..cwd
+                    if plc_prompt_gitSymbol then
+                        cwd = plc_prompt_gitSymbol.." "..cwd
                     end
                 end
                 -- if not git dir leave the full path
