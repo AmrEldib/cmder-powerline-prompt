@@ -42,8 +42,12 @@ local segment = {
 -- Sets the properties of the Segment object, and prepares for a segment to be added
 ---
 local function init()
-    -- fullpath
-    cwd = clink.get_cwd()
+
+    --* use lua.io to get current path
+    local cwd
+    obj=io.popen("cd")
+    cwd=obj:read("*all"):sub(1,-2)
+    obj:close()
 
     -- show just current folder
     if plc_prompt_type == promptTypeFolder then
