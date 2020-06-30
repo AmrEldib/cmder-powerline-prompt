@@ -38,16 +38,22 @@ local segment = {
     fillColor = colorBlue
 }
 
+-- use lua.io to get current path
+local function getCurrentPath()
+    obj = io.popen("cd")
+    local currentPath = obj:read("*all"):sub(1,-2)
+    obj.close()
+    return currentPath
+end
+
+
 ---
 -- Sets the properties of the Segment object, and prepares for a segment to be added
 ---
 local function init()
 
     --* use lua.io to get current path
-    local cwd
-    obj=io.popen("cd")
-    cwd=obj:read("*all"):sub(1,-2)
-    obj:close()
+    local cwd = getCurrentPath()
 
     -- show just current folder
     if plc_prompt_type == promptTypeFolder then
