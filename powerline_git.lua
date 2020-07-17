@@ -179,11 +179,11 @@ end
 ---
 local function addAddonSegment()
     init()
-    if segment.isNeeded then 
+   if segment.isNeeded then 
         addSegment(segment.text, segment.textColor, segment.fillColor)
-    end 
-    if statusSegment.isNeeded then 
-        addSegment(statusSegment.text, statusSegment.textColor, statusSegment.fillColor)
+        if statusSegment.isNeeded then 
+          addSegment(statusSegment.text, statusSegment.textColor, statusSegment.fillColor)
+        end
     end 
 end 
 
