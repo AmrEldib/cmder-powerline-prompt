@@ -47,14 +47,14 @@ plc_git_branchSymbol = ""
 plc_git_conflictSymbol = "!"
 
 -- OPTIONAL. Git symbol used in the folder segment when 'smart' prompt is used and the user navigates to a folder with Git repo
---plc_prompt_gitSymbol = "GIT"
+plc_prompt_gitSymbol = ""
 
--- REQUIRED. Hg branch symbol. Used to indicate the name of a branch 
-plc_hg_branchSymbol = ""
+-- OPTIONAL. Git symbol used in the git status segment. Used to indicate number of dirty files
+plc_git_fileCountSymbol="±"
 
--- REQUIRED. Hg conflict symbol. Used to indicate there's a conflict.
-plc_hg_conflictSymbol = "!"
--- You can use "  " conflict symbol with 'Anonymous Powerline' font.
+-- OPTIONAL. Git symbol used in the git ahead\behind segment. Used to indicate inbound and outgoing commits
+plc_git_behindSymbol=""
+plc_git_aheadSymbol=""
 
 -- OPTIONAL. npm Symbol used in the NPM segment as visual indicator.
 --plc_npm_npmSymbol = "NPM"
