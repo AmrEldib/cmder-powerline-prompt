@@ -33,7 +33,18 @@ function get_git_branch(git_dir)
     -- otherwise it is a detached commit
     local branch_name = HEAD:match('ref: refs/heads/(.+)')
 
-    return branch_name or 'HEAD detached at '..HEAD:sub(1, 7)
+    return branch_name or 'HEAD detached'
+end
+
+---
+-- Get current git commit short SHA
+-- @return {string} current HEAD commit short SHA
+---
+function get_git_commit_sha_short()
+    local file = io.popen("git rev-parse --short HEAD 2>nul")
+    local sha = file:read()
+    file.close()
+    return sha or 'no commit'
 end
 
 ---
@@ -85,12 +96,25 @@ local segment = {
     fillColor = 0
 }
 
+-- * Sub-segment object with these properties:
+---- * text
+---- * textColor: Use one of the color constants. Ex: colorWhite
+---- * fillColor: Use one of the color constants. Ex: colorBlue
+local subSegment = {
+    text = "",
+    textColor = colorWhite,
+    fillColor = colorMagenta
+}
+
 ---
 -- Sets the properties of the Segment object, and prepares for a segment to be added
 ---
 local function init()
-    segment.isNeeded = get_git_dir()    
+    segment.isNeeded = get_git_dir()
     if segment.isNeeded then
+        -- init Sub-segment
+        subSegment.text = get_git_commit_sha_short()
+
         -- if we're inside of git repo then try to detect current branch
         local branch = get_git_branch(git_dir)
         if branch then
@@ -105,9 +129,9 @@ local function init()
                 segment.fillColor = segmentColors.conflict.fill
                 if plc_git_conflictSymbol then
                     segment.text = segment.text..plc_git_conflictSymbol
-                end 
+                end
                 return
-            end 
+            end
 
             if gitStatus then
                 segment.textColor = segmentColors.clean.text
@@ -121,17 +145,18 @@ local function init()
             segment.text = segment.text.."± "
         end
     end
-end 
+end
 
 ---
 -- Uses the segment properties to add a new segment to the prompt
 ---
 local function addAddonSegment()
     init()
-    if segment.isNeeded then 
+    if segment.isNeeded then
         addSegment(segment.text, segment.textColor, segment.fillColor)
-    end 
-end 
+        addSegment(subSegment.text, subSegment.textColor, subSegment.fillColor)
+    end
+end
 
 -- Register this addon with Clink
 clink.prompt.register_filter(addAddonSegment, 61)
