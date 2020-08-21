@@ -18,6 +18,9 @@
 -- Always keep the _powerline_config.lua.sample file to restore to if your config got messed up.
 
 
+-- REQUIRED. String format for displaying date and time. Be careful before you change this.
+plc_datetime_type = "%Y-%m-%d %H:%M:%S"
+
 --- REQUIRED. powerline_config_prompt_type is whether the displayed prompt is the full path or only the folder name
  -- Use:
  -- "full" for full path like C:\Windows\System32
