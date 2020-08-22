@@ -29,7 +29,7 @@ local segment = {
 -- Sets the properties of the Segment object, and prepares for a segment to be added
 ---
 local function init()
-	segment.text = time_prompt()
+	segment.text = " "..time_prompt().." "
 end
 
 ---

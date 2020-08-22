@@ -113,7 +113,7 @@ local function init()
     segment.isNeeded = get_git_dir()
     if segment.isNeeded then
         -- init Sub-segment
-        subSegment.text = get_git_commit_sha_short()
+        subSegment.text = " "..get_git_commit_sha_short().." "
 
         -- if we're inside of git repo then try to detect current branch
         local branch = get_git_branch(git_dir)
