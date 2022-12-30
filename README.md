@@ -1,3 +1,12 @@
+# Status (Dec. 2022)
+
+Sometime in 2019, I've switched from Windows to Linux and stopped using Cmder on daily basis.  
+Since the new [Windows Terminal](https://github.com/microsoft/terminal) became available, I've also stopped using Cmder on my work machine.  
+**This project is no longer updated**.  
+For an alternative, check out [oh-my-posh](https://ohmyposh.dev/)  
+For a Cmder alternative, please read the [Status and Contributions section](#status--contributions) and check out the [pull requests](https://github.com/AmrEldib/cmder-powerline-prompt/pulls) and the [list of forks](https://github.com/AmrEldib/cmder-powerline-prompt/network/members)  
+Thank you all!
+
 # Cmder-powerline-prompt
 
 This is a custom prompt for [Cmder](http://cmder.net/) (the alternative console emulator for Windows). There's also a [PowerShell version](https://github.com/AmrEldib/cmder-powershell-powerline-prompt) of this prompt.  
