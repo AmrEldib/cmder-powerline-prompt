@@ -58,3 +58,9 @@ plc_hg_conflictSymbol = "!"
 
 -- OPTIONAL. npm Symbol used in the NPM segment as visual indicator.
 --plc_npm_npmSymbol = "NPM"
+
+-- OPTIONAL. Snake Symbol used in the Python segment as visual indicator.
+-- plc_python_pythonSymbol = "🐍"
+
+-- REQUIRED. Only show virtual env in directories which contain a .py file
+plc_python_alwaysShow = false
