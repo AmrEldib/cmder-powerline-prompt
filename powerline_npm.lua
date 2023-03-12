@@ -50,7 +50,7 @@ local function init()
     end
 
     if plc_npm_npmSymbol then
-      segment.text = " "..npmSymbol.." "..package_name.."@"..package_version.." "
+      segment.text = " "..plc_npm_npmSymbol.." "..package_name.."@"..package_version.." "
     else
       segment.text = " "..package_name.."@"..package_version.." "
     end 
